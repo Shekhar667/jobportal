@@ -1,0 +1,21 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+
+<div class="container">
+<h2>Available Jobs</h2>
+
+<form method="get">
+    <input name="q" placeholder="Search jobs..." value="{{ request.GET.q }}">
+    <button>Search</button>
+</form>
+
+{% for job in jobs %}
+<div class="card">
+    <h4>{{ job.title }}</h4>
+    <p>{{ job.location }} | {{ job.salary }}</p>
+    <a href="/applications/apply/{{ job.id }}/">Apply</a>
+</div>
+{% empty %}
+<p>No jobs found</p>
+{% endfor %}
+</div>

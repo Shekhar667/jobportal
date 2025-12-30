@@ -1,0 +1,8 @@
+<h3>My Jobs</h3>
+{% for job in jobs %}
+<div class="card p-3 mt-2">
+  {{ job.title }} – {{ job.location }}
+</div>
+{% empty %}
+<p>No jobs posted yet.</p>
+{% endfor %}

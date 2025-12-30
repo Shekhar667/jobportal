@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+
+<div class="auth-container">
+    <div class="auth-card">
+
+        <div class="auth-title">JobPortal</div>
+        <div class="auth-subtitle">
+            Sign up to find jobs or hire talent
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <input name="first_name" placeholder="First Name">
+            <input name="last_name" placeholder="Last Name">
+            <input name="username" placeholder="Username">
+            <input name="email" placeholder="Email">
+            <input name="phone" placeholder="Phone">
+
+            <div style="position:relative">
+                <input type="password" name="password" id="password" placeholder="Password">
+                <span class="eye" onclick="togglePassword()">👁</span>
+            </div>
+
+            <select name="role">
+                <option value="jobseeker">Job Seeker</option>
+                <option value="employer">Employer</option>
+            </select>
+
+            <button class="auth-btn">Sign Up</button>
+            
+        </form>
+        
+
+    </div>
+    <div class="auth-footer">
+        Have an account?<a href="/accounts/login/"> Log in </a>
+    </div>
+</div>
+
+<!-- 🔥 OTP MODAL (NOW CORRECT POSITION) -->
+<div id="otpModal" class="modal" style="display:none;" data-show="{{ show_otp_popup|default:'0' }}">
+    <div class="modal-content">
+        <h4>Email Verification</h4>
+        <p>Enter OTP sent to your email</p>
+
+        <input id="otpInput" placeholder="Enter OTP">
+        <button class="auth-btn" onclick="verifyOTP()">Verify OTP</button>
+
+        <p style="margin-top:10px">
+            <a href="javascript:void(0)" onclick="resendOTP()">Resend OTP</a>
+        </p>
+
+        <p id="otpError" style="color:red;"></p>
+    </div>
+</div>
+
+<script>
+function togglePassword(){
+    let p = document.getElementById("password");
+    p.type = p.type === "password" ? "text" : "password";
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    const modal = document.getElementById("otpModal");
+    if (modal.dataset.show === "True") {
+        modal.style.display = "flex";
+    }
+});
+
+function verifyOTP(){
+    fetch("/accounts/verify-otp-ajax/",{
+        method:"POST",
+        headers:{
+            "X-CSRFToken":"{{ csrf_token }}",
+            "Content-Type":"application/x-www-form-urlencoded"
+        },
+        body:"otp=" + document.getElementById("otpInput").value
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.success){
+            window.location.href="/accounts/login/";
+        }else{
+            document.getElementById("otpError").innerText="Invalid OTP";
+        }
+    });
+}
+
+function resendOTP(){
+    fetch("/accounts/resend-otp-ajax/")
+    .then(res => res.json())
+    .then(data => {
+        if(data.success){
+            document.getElementById("otpError").innerText="OTP resent to your email";
+        }
+    });
+}
+</script>
+
+{% endblock %}

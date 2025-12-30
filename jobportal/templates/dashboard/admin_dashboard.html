@@ -1,0 +1,61 @@
+<!-- {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+</head>
+<body>
+
+<div class="dashboard-container">
+
+    <h1>Admin Dashboard</h1>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>Total Users</h3>
+            <p id="total-users">--</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>Total Jobs</h3>
+            <p id="total-jobs">--</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>Total Applications</h3>
+            <p id="total-applications">--</p>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
+
+ -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    
+</head>
+<body>
+
+<h1>Admin Dashboard</h1>
+
+<ul>
+    <li><a href="/admin/">Django Admin Panel</a></li>
+    <li><a href="/jobs/admin/">View All Jobs</a></li>
+    <li><a href="/applications/admin/">View Applications</a></li>
+    <li><a href="/logout/">Logout</a></li>
+</ul>
+
+</body>
+</html>

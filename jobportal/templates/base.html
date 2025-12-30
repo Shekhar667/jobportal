@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Job Portal</title>
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+</head>
+<body>
+
+<nav style="background:#000;padding:10px 20px;color:white">
+    <span style="font-weight:bold">JobPortal</span>
+
+    <span style="float:right">
+        {% if user.is_authenticated %}
+            <a href="/dashboard/" style="color:white;margin-right:10px">Dashboard</a>
+            <a href="/accounts/logout/" style="color:red">Logout</a>
+        {% else %}
+            <a href="/accounts/login/" style="color:white;margin-right:10px">Login</a>
+            <a href="/accounts/signup/" style="color:yellow">Register</a>
+        {% endif %}
+    </span>
+</nav>
+
+<div class="container mt-4">
+    {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>

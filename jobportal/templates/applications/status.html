@@ -1,0 +1,15 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+
+<div class="container">
+<h2>My Applications</h2>
+
+{% for app in applications %}
+<div class="card">
+    <h4>{{ app.job.title }}</h4>
+    <p>Status: {{ app.status }}</p>
+</div>
+{% empty %}
+<p>You have not applied to any jobs yet.</p>
+{% endfor %}
+</div>

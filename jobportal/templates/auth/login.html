@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+<div class="auth-container">
+
+    <div class="auth-card">
+        <div class="auth-title">JobPortal</div>
+        <div class="auth-subtitle">
+            Login to your account
+        </div>
+
+        {% if error %}
+            <p style="color:red;font-size:13px;">{{ error }}</p>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <input name="email" placeholder="Email address" required>
+            <!-- <input type="password" name="password" placeholder="Password" required> -->
+            <div style="position:relative">
+                <input type="password" name="password" id="password" placeholder="Password">
+                <span onclick="togglePassword()" 
+                        style="position:absolute; right:10px; top:10px; cursor:pointer;">
+                        👁
+                </span>
+                </div>
+
+                <script>
+                function togglePassword() {
+                let p = document.getElementById("password");
+                p.type = p.type === "password" ? "text" : "password";
+                }
+                </script>
+
+            <button class="auth-btn">Log in</button>
+        </form>
+    </div>
+
+    <div class="auth-footer">
+        Don't have an account? <a href="/accounts/signup/">Sign up</a>
+    </div>
+</div>
+
+{% endblock %}

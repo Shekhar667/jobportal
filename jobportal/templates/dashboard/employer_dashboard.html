@@ -1,0 +1,26 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+
+<div class="container">
+    <h2>Employer Dashboard</h2>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <h3>Post Job</h3>
+                <a href="/jobs/post/">Go</a>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <h3>My Jobs</h3>
+                <a href="/jobs/my_jobs/">View</a>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <h3>Applicants</h3>
+                <a href="/applications/">View</a>
+            </div>
+        </div>
+    </div>
+</div>

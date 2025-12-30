@@ -1,0 +1,14 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+
+<div class="container">
+    <h2>Post a New Job</h2>
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="title" placeholder="Job Title" required>
+        <input type="text" name="location" placeholder="Location" required>
+        <input type="text" name="salary" placeholder="Salary" required>
+        <textarea name="description" placeholder="Job Description" required></textarea>
+        <button type="submit">Post Job</button>
+    </form>
+</div>

@@ -1,0 +1,26 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+
+<div class="container">
+    <h2>Job Seeker Dashboard</h2>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <h3>Search Jobs</h3>
+                <a href="/jobs/list/">Go</a>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <h3>Applied Jobs</h3>
+                <a href="/applications/status/">View</a>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <h3>Profile</h3>
+                <a href="/accounts/profile/">Profile</a>
+            </div>
+        </div>
+    </div>
+</div>
