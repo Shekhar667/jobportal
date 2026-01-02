@@ -51,13 +51,13 @@ def signup_view(request):
                 otp=otp
             )
 
-            send_mail(
-                'Your OTP Code',
-                f'Your OTP is: {otp}',
-                settings.EMAIL_HOST_USER,
-                [user.email],
-            )
-
+            # send_mail(
+            #     'Your OTP Code',
+            #     f'Your OTP is: {otp}',
+            #     settings.EMAIL_HOST_USER,
+            #     [user.email],
+            # )
+            print("OTP:", otp) 
             request.session['otp_email'] = user.email
             request.session['otp_attempts'] = 0
             request.session['otp_time'] = time.time()
@@ -135,13 +135,13 @@ def resend_otp_view(request):
     request.session['otp_attempts'] = 0
     request.session['otp_time'] = time.time()
 
-    send_mail(
-        'Your OTP Code (Resent)',
-        f'Your OTP is: {otp}',
-        settings.EMAIL_HOST_USER,
-        [user.email],
-    )
-
+    # send_mail(
+    #     'Your OTP Code (Resent)',
+    #     f'Your OTP is: {otp}',
+    #     settings.EMAIL_HOST_USER,
+    #     [user.email],
+    # )
+    print("OTP:", otp) 
     return JsonResponse({'success': True})
 
 
