@@ -12,3 +12,4 @@ class Job(models.Model):
     salary = models.CharField(max_length=50)
     job_type = models.CharField(max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
