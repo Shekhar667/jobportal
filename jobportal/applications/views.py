@@ -1,13 +1,15 @@
 from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
-from accounts.decorators import role_required
+# from accounts.decorators import role_required
 from .models import Application
 from jobs.models import Job
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from accounts.decorators import hybrid_auth_required
 
-@login_required
-@role_required(['admin'])
+# @login_required
+# @role_required(['admin'])
+@hybrid_auth_required(['admin'])
 def admin_applications(request):
     is_api = request.headers.get('Accept') == 'application/json'
     applications = Application.objects.select_related('job', 'job_seeker')
@@ -28,8 +30,9 @@ def admin_applications(request):
     })
 
 @csrf_exempt
-@login_required
-@role_required(['jobseeker'])
+# @login_required
+# @role_required(['jobseeker'])
+@hybrid_auth_required(['jobseeker'])
 def apply_job(request, job_id):
     try:
         app, created = Application.objects.get_or_create(
@@ -51,8 +54,9 @@ def apply_job(request, job_id):
 
 
 @csrf_exempt
-@login_required
-@role_required(['jobseeker'])
+# @login_required
+# @role_required(['jobseeker'])
+@hybrid_auth_required(['jobseeker'])
 def application_status(request):
     apps = Application.objects.filter(job_seeker=request.user)
     is_api = request.headers.get('Accept') == 'application/json'
@@ -84,8 +88,9 @@ def application_status(request):
 
 
 @csrf_exempt
-@login_required
-@role_required(['employer'])
+# @login_required
+# @role_required(['employer'])
+@hybrid_auth_required(['employer'])
 def job_applicants(request, job_id):
     job = get_object_or_404(Job, id=job_id, employer=request.user)
     applications = Application.objects.filter(job=job)
@@ -109,8 +114,9 @@ def job_applicants(request, job_id):
 
 #+==============Approve / Reject applicant (Employer)+===================
 @csrf_exempt
-@login_required
-@role_required(['employer'])
+# @login_required
+# @role_required(['employer'])
+@hybrid_auth_required(['employer'])
 def update_application_status(request, app_id):
     application = get_object_or_404(
         Application,

@@ -10,6 +10,8 @@ from django.contrib import messages
 from django.db import IntegrityError
 import time
 from django.views.decorators.csrf import csrf_exempt
+from accounts.utils import generate_jwt
+
 
 @csrf_exempt
 def signup_view(request):
@@ -147,36 +149,55 @@ def resend_otp_view(request):
 
 
 
+
 @csrf_exempt
 def login_view(request):
     is_api = request.headers.get('Accept') == 'application/json'
 
-    try:
-        if request.method == 'POST':
-            user = authenticate(
-                request,
-                email=request.POST.get('email'),
-                password=request.POST.get('password')
-            )
-
-            if not user:
-                if is_api:
-                    return JsonResponse({'error': 'Invalid credentials'}, status=401)
-                return render(request, 'auth/login.html', {'error': 'Invalid credentials'})
-
-            if not user.is_email_verified:
-                if is_api:
-                    return JsonResponse({'error': 'Email not verified'}, status=403)
-                return render(request, 'auth/login.html', {'error': 'Verify email first'})
-
-            login(request, user)
-
-            if is_api:
-                return JsonResponse({'success': True}, status=200)
-
-            return redirect('/dashboard/')
-
+    # =====================
+    # GET → HTML FORM
+    # =====================
+    if request.method == 'GET':
         return render(request, 'auth/login.html')
+
+    # =====================
+    # POST → LOGIN
+    # =====================
+    try:
+        user = authenticate(
+            request,
+            email=request.POST.get('email'),
+            password=request.POST.get('password')
+        )
+
+        if not user:
+            if is_api:
+                return JsonResponse({'error': 'Invalid credentials'}, status=401)
+            return render(request, 'auth/login.html', {'error': 'Invalid credentials'})
+
+        if not user.is_email_verified:
+            if is_api:
+                return JsonResponse({'error': 'Email not verified'}, status=403)
+            return render(request, 'auth/login.html', {'error': 'Verify email first'})
+
+        # ✅ Session login (browser)
+        login(request, user)
+
+        # ✅ JWT for API
+        token = generate_jwt(user)
+
+        if is_api:
+            return JsonResponse({
+                'success': True,
+                'access_token': token,
+                'user': {
+                    # 'id': user.id,
+                    # 'email': user.email,
+                    'role': user.role
+                }
+            }, status=200)
+        # Browser redirect
+        return redirect('/dashboard/')
 
     except Exception as e:
         print('LOGIN ERROR:', e)

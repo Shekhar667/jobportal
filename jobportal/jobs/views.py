@@ -2,12 +2,14 @@ from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from .models import Job
-from accounts.decorators import role_required
+# from accounts.decorators import role_required
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from accounts.decorators import hybrid_auth_required
 
-@login_required
-@role_required(['admin'])
+# @login_required
+# @role_required(['admin'])
+@hybrid_auth_required(['admin'])
 def admin_job_list(request):
     jobs = Job.objects.all()
     is_api = request.headers.get('Accept') == 'application/json'
@@ -23,8 +25,9 @@ def admin_job_list(request):
 # ============================
 
 @csrf_exempt
-@login_required
-@role_required(['employer'])
+# @login_required
+# @role_required(['employer'])
+@hybrid_auth_required(['employer'])
 def post_job(request):
     is_api = request.headers.get('Accept') == 'application/json'
 
@@ -57,8 +60,9 @@ def post_job(request):
 # EMPLOYER: VIEW MY JOBS
 # ============================
 @csrf_exempt
-@login_required
-@role_required(['employer'])
+# @login_required
+# @role_required(['employer'])
+@hybrid_auth_required(['employer'])
 def my_jobs(request):
     jobs = Job.objects.filter(employer=request.user)
     is_api = request.headers.get('Accept') == 'application/json'
@@ -74,8 +78,10 @@ def my_jobs(request):
 # =============================
 # JOB SEEKER: JOB LIST + SEARCH
 # =============================
-@login_required
-@role_required(['jobseeker'])
+# @login_required
+# @role_required(['jobseeker'])
+# @hybrid_auth_required(['jobseeker'])
+
 def job_list(request):
     jobs = Job.objects.all()
     q = request.GET.get('q')
@@ -91,8 +97,10 @@ def job_list(request):
 
 
 @csrf_exempt
-@login_required
-@role_required(['employer'])
+# @login_required
+# @role_required(['employer'])
+
+@hybrid_auth_required(['employer'])
 def edit_job(request, job_id):
     job = get_object_or_404(Job, id=job_id, employer=request.user)
     is_api = request.headers.get('Accept') == 'application/json'
@@ -123,8 +131,9 @@ def edit_job(request, job_id):
     return render(request, 'jobs/edit_job.html', {'job': job})
 
 @csrf_exempt
-@login_required
-@role_required(['employer'])
+# @login_required
+# @role_required(['employer'])
+@hybrid_auth_required(['employer'])
 def delete_job(request, job_id):
     job = get_object_or_404(Job, id=job_id, employer=request.user)
     is_api = request.headers.get('Accept') == 'application/json'
@@ -141,8 +150,9 @@ def delete_job(request, job_id):
 
 #++++++++++++++++++Job ACTIVE / INACTIVE toggle (Employer)+++++++++++++++#
 @csrf_exempt
-@login_required
-@role_required(['employer'])
+# @login_required
+# @role_required(['employer'])
+@hybrid_auth_required(['employer'])
 def toggle_job_status(request, job_id):
     job = get_object_or_404(Job, id=job_id, employer=request.user)
     is_api = request.headers.get('Accept') == 'application/json'
