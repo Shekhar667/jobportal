@@ -142,4 +142,13 @@ EMAIL_HOST_USER = 'pankajku8561@gmail.com'
 EMAIL_HOST_PASSWORD = 'wchzaeqisffvthro'
 
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+    "jobportal-bz1x.onrender.com",
+    "localhost",
+    "127.0.0.1"
+]
+
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://jobportal-bz1x.onrender.com"
+]
