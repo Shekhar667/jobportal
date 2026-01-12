@@ -1,105 +1,816 @@
-{% extends 'base.html' %}
 {% load static %}
-{% block content %}
 
-<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - JobPortal</title>
+    <style>
+        /* RESPONSIVE CSS - ADDED FOR ALL DEVICES */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        body {
+            background: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        /* Responsive container */
+        .auth-container {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Responsive card */
+        .auth-card {
+            width: 100%;
+            padding: 30px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(37, 99, 235, 0.1);
+            border: 1px solid rgba(37, 99, 235, 0.1);
+        }
+        
+        /* Responsive typography */
+        .auth-title {
+            font-size: clamp(24px, 5vw, 32px);
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #2563eb;
+        }
+        
+        .auth-subtitle {
+            font-size: clamp(14px, 3vw, 16px);
+            text-align: center;
+            margin-bottom: 25px;
+            color: #666;
+        }
+        
+        /* Message area */
+        .message-area {
+            width: 100%;
+            background: #eff6ff !important;
+            color: #1e40af !important;
+            padding: 12px !important;
+            margin-bottom: 15px !important;
+            border-radius: 6px !important;
+            font-size: 14px !important;
+            text-align: center !important;
+            border: 1px solid #2563eb !important;
+        }
+        
+        .error-message {
+            background: #fef2f2 !important;
+            color: #dc2626 !important;
+            border: 1px solid #fca5a5 !important;
+        }
+        
+        .success-message {
+            background: #f0fdf4 !important;
+            color: #16a34a !important;
+            border: 1px solid #86efac !important;
+        }
+        
+        /* Form styling */
+        form {
+            width: 100%;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #dbeafe;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background: #f8fafc;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            background: white;
+        }
+        
+        input::placeholder {
+            color: #94a3b8;
+        }
+        
+        /* Password field */
+        div[style*="position:relative"] {
+            position: relative;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        
+        .eye {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 16px;
+            user-select: none;
+            color: #2563eb;
+            background: rgba(37, 99, 235, 0.1);
+            padding: 4px;
+            border-radius: 4px;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Button */
+        .auth-btn {
+            width: 100%;
+            padding: 12px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 5px;
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3);
+        }
+        
+        .auth-btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
+        }
+        
+        .auth-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 2px rgba(37, 99, 235, 0.3);
+        }
+        
+        /* Footer */
+        .auth-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: clamp(14px, 3vw, 16px);
+            color: #666;
+        }
+        
+        .auth-footer a {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        
+        .auth-footer a:hover {
+            color: #1d4ed8;
+            background: rgba(37, 99, 235, 0.1);
+            text-decoration: none;
+        }
+        
+        /* Select dropdown styling */
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%232563eb' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 16px;
+            padding-right: 40px;
+            cursor: pointer;
+        }
+        
+        select option {
+            background: white;
+            color: #1e293b;
+        }
+        
+        select option:checked {
+            background: #eff6ff;
+            color: #2563eb;
+            font-weight: 500;
+        }
+        
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(37, 99, 235, 0.2);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+            display: none;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.2);
+            border: 2px solid #2563eb;
+        }
+        
+        .modal-content h4 {
+            margin-bottom: 10px;
+            color: #2563eb;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .modal-content p {
+            margin-bottom: 20px;
+            color: #475569;
+        }
+        
+        .modal-content input {
+            margin-bottom: 20px;
+            border: 2px solid #dbeafe;
+        }
+        
+        .modal-content input:focus {
+            border-color: #2563eb;
+        }
+        
+        .modal-content a {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        
+        .modal-content a:hover {
+            color: #1d4ed8;
+            background: rgba(37, 99, 235, 0.1);
+            text-decoration: none;
+        }
+        
+        /* Modal button */
+        .modal-content .auth-btn {
+            background: #2563eb;
+            margin-top: 10px;
+        }
+        
+        .modal-content .auth-btn:hover {
+            background: #1d4ed8;
+        }
+        
+        /* OTP input styling */
+        #otpInput {
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 4px;
+            text-align: center;
+            color: #2563eb;
+        }
+        
+        #otpInput::placeholder {
+            color: #cbd5e1;
+            letter-spacing: normal;
+        }
+        
+        /* OTP error/success messages */
+        #otpError {
+            transition: all 0.3s;
+        }
+        
+        /* Responsive adjustments for mobile */
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+                background: #eff6ff;
+            }
+            
+            .auth-container {
+                padding: 10px;
+            }
+            
+            .auth-card {
+                padding: 25px 20px;
+                box-shadow: 0 4px 6px rgba(37, 99, 235, 0.1);
+            }
+            
+            input, select, .auth-btn {
+                padding: 10px;
+            }
+            
+            .modal {
+                padding: 15px;
+                background: rgba(37, 99, 235, 0.3);
+            }
+            
+            .modal-content {
+                padding: 25px 20px;
+            }
+            
+            .eye {
+                width: 28px;
+                height: 28px;
+                font-size: 14px;
+            }
+        }
+        
+        @media (max-width: 320px) {
+            .auth-card {
+                padding: 20px 15px;
+            }
+            
+            .auth-title {
+                font-size: 22px;
+            }
+            
+            .auth-subtitle {
+                font-size: 14px;
+            }
+            
+            input, select, .auth-btn {
+                padding: 8px;
+                font-size: 14px;
+            }
+            
+            .modal-content h4 {
+                font-size: 20px;
+            }
+        }
+        
+        /* Prevent iOS zoom on input focus */
+        @media (max-width: 480px) {
+            input, select {
+                font-size: 16px;
+            }
+        }
+        
+        /* Ensure no horizontal scrolling */
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+        }
+        
+        /* Loading state for OTP resend */
+        .loading {
+            opacity: 0.7;
+            cursor: not-allowed;
+            color: #94a3b8 !important;
+        }
+        
+        /* Success states */
+        .success {
+            color: #059669 !important;
+        }
+        
+        /* Animation for OTP resend */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse {
+            animation: pulse 0.3s ease-in-out;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #2563eb;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #1d4ed8;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
 
-<div class="auth-container">
-    <div class="auth-card">
-
-        <div class="auth-title">JobPortal</div>
-        <div class="auth-subtitle">
-            Sign up to find jobs or hire talent
-        </div>
-
-        <form method="post">
-            {% csrf_token %}
-
-            <input name="first_name" placeholder="First Name">
-            <input name="last_name" placeholder="Last Name">
-            <input name="username" placeholder="Username">
-            <input name="email" placeholder="Email">
-            <input name="phone" placeholder="Phone">
-
-            <div style="position:relative">
-                <input type="password" name="password" id="password" placeholder="Password">
-                <span class="eye" onclick="togglePassword()">👁</span>
+            <div class="auth-title">JobPortal</div>
+            <div class="auth-subtitle">
+                Sign up to find jobs or hire talent
             </div>
 
-            <select name="role">
-                <option value="jobseeker">Job Seeker</option>
-                <option value="employer">Employer</option>
-            </select>
+            <!-- ✅ GLOBAL MESSAGE AREA (ALL ERRORS / INFO) -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="message-area">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
 
-            <button class="auth-btn">Sign Up</button>
+            <!-- Dynamic message area for JavaScript responses -->
+            <div id="dynamicMessage" class="message-area" style="display: none;"></div>
+
+            <form method="post" id="signupForm">
+                {% csrf_token %}
+
+                <input name="first_name" placeholder="First Name" required>
+                <input name="last_name" placeholder="Last Name" required>
+                <input name="username" placeholder="Username" required>
+                <input name="email" placeholder="Email" required type="email">
+                
+                <div style="position:relative">
+                    <input type="password" name="password" id="password" placeholder="Password" required>
+                    <span class="eye" onclick="togglePassword()" title="Show/Hide Password">👁</span>
+                </div>
+                <input name="phone" placeholder="Phone" required type="tel">
+
+                <select name="role" required>
+                    <option value="">Select Role</option>
+                    <option value="jobseeker">Job Seeker</option>
+                    <option value="employer">Employer</option>
+                </select>
+
+                <button type="submit" class="auth-btn">Sign Up</button>
+            </form>
+
+        </div>
+
+        <div class="auth-footer">
+            Have an account?
+            <a href="/accounts/login/"> Log in </a>
+        </div>
+    </div>
+
+    <!-- 🔥 OTP MODAL -->
+    <div id="otpModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h4>Email Verification</h4>
             
-        </form>
+            <p id="otpMessage">Enter OTP sent to your email</p>
+
+            <input id="otpInput" placeholder="Enter OTP" type="number" inputmode="numeric">
+            <button class="auth-btn" onclick="verifyOTP()">Verify OTP</button>
+
+            <p style="margin-top:15px; font-size:14px;">
+                <a href="javascript:void(0)" onclick="resendOTP()" id="resendLink">Resend OTP</a>
+            </p>
+
+            <p id="otpError" style="color:red; margin-top:10px; font-size:14px;"></p>
+        </div>
+    </div>
+
+    <script>
+    /* Password show / hide with visual feedback */
+    function togglePassword(){
+        let p = document.getElementById("password");
+        let eye = document.querySelector('.eye');
         
-
-    </div>
-    <div class="auth-footer">
-        Have an account?<a href="/accounts/login/"> Log in </a>
-    </div>
-</div>
-
-<!-- 🔥 OTP MODAL (NOW CORRECT POSITION) -->
-<div id="otpModal" class="modal" style="display:none;" data-show="{{ show_otp_popup|default:'0' }}">
-    <div class="modal-content">
-        <h4>Email Verification</h4>
-        <p>Enter OTP sent to your email</p>
-
-        <input id="otpInput" placeholder="Enter OTP">
-        <button class="auth-btn" onclick="verifyOTP()">Verify OTP</button>
-
-        <p style="margin-top:10px">
-            <a href="javascript:void(0)" onclick="resendOTP()">Resend OTP</a>
-        </p>
-
-        <p id="otpError" style="color:red;"></p>
-    </div>
-</div>
-
-<script>
-function togglePassword(){
-    let p = document.getElementById("password");
-    p.type = p.type === "password" ? "text" : "password";
-}
-
-document.addEventListener("DOMContentLoaded", function () {
-    const modal = document.getElementById("otpModal");
-    if (modal.dataset.show === "True") {
-        modal.style.display = "flex";
+        if (p.type === "password") {
+            p.type = "text";
+            eye.textContent = "🔒";
+            eye.style.color = "#1d4ed8";
+        } else {
+            p.type = "password";
+            eye.textContent = "👁";
+            eye.style.color = "#2563eb";
+        }
+        
+        // Add pulse animation
+        eye.classList.add('pulse');
+        setTimeout(() => eye.classList.remove('pulse'), 300);
     }
-});
 
-function verifyOTP(){
-    fetch("/accounts/verify-otp-ajax/",{
-        method:"POST",
-        headers:{
-            "X-CSRFToken":"{{ csrf_token }}",
-            "Content-Type":"application/x-www-form-urlencoded"
-        },
-        body:"otp=" + document.getElementById("otpInput").value
-    })
-    .then(res => res.json())
-    .then(data => {
-        if(data.success){
-            window.location.href="/accounts/login/";
-        }else{
-            document.getElementById("otpError").innerText="Invalid OTP";
+    /* OTP modal show */
+    document.addEventListener("DOMContentLoaded", function () {
+        const modal = document.getElementById("otpModal");
+        // Check if we should show OTP modal (from backend response)
+        if ("{{ show_otp_popup|default:'0' }}" === "True") {
+            modal.style.display = "flex";
+            // Focus OTP input when modal opens
+            setTimeout(() => {
+                document.getElementById('otpInput')?.focus();
+            }, 300);
+        }
+        
+        // Add blue tint to all inputs on page load
+        document.querySelectorAll('input, select').forEach(el => {
+            el.style.borderColor = '#dbeafe';
+        });
+    });
+
+    /* Handle form submission with AJAX to match backend functionality */
+    document.getElementById("signupForm").addEventListener("submit", function(e){
+        e.preventDefault(); // Prevent default form submission
+        
+        const form = this;
+        const formData = new FormData(form);
+        const submitBtn = form.querySelector('.auth-btn');
+        const originalBtnText = submitBtn.textContent;
+        const messageArea = document.getElementById('dynamicMessage');
+        
+        // Show loading state
+        submitBtn.textContent = "Signing Up...";
+        submitBtn.disabled = true;
+        
+        // Clear previous messages
+        messageArea.style.display = 'none';
+        messageArea.className = 'message-area';
+        
+        // Validate required fields
+        const fields = form.querySelectorAll("input[required], select[required]");
+        let firstEmpty = null;
+        
+        for(let field of fields){
+            if(!field.value.trim()){
+                if (!firstEmpty) firstEmpty = field;
+                field.style.borderColor = '#ef4444';
+                field.style.boxShadow = '0 0 0 3px rgba(239, 68, 68, 0.1)';
+            } else {
+                field.style.borderColor = '#2563eb';
+                field.style.boxShadow = '0 0 0 3px rgba(37, 99, 235, 0.1)';
+            }
+        }
+        
+        if(firstEmpty){
+            firstEmpty.focus();
+            submitBtn.textContent = originalBtnText;
+            submitBtn.disabled = false;
+            
+            // Show error message
+            messageArea.textContent = "Please fill all required fields";
+            messageArea.className = 'message-area error-message';
+            messageArea.style.display = 'block';
+            return;
+        }
+        
+        // Send AJAX request to match backend's JSON response handling
+        fetch(form.action || window.location.href, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                // Success - show OTP modal
+                messageArea.textContent = data.message || "Signup successful! Please verify your email.";
+                messageArea.className = 'message-area success-message';
+                messageArea.style.display = 'block';
+                
+                // ✅ OTP SHOULD APPEAR IN CONSOLE ONLY (NOT ON PAGE)
+                console.log('✅ Signup Successful!');
+                if (data.otp) {
+                    console.log('📧 OTP Generated:', data.otp);
+                    console.log('📝 Copy this OTP from console to verify:', data.otp);
+                    console.log('ℹ️ Note: OTP is only shown in console, not on the page');
+                    
+                    // Optional: You can add a subtle indicator that OTP is in console
+                    console.log('👆 Look above for the OTP in your browser console');
+                }
+                
+                // Show OTP modal
+                const modal = document.getElementById('otpModal');
+                modal.style.display = 'flex';
+                setTimeout(() => {
+                    document.getElementById('otpInput')?.focus();
+                }, 300);
+                
+            } else if (data.error) {
+                // Error from backend
+                messageArea.textContent = data.message || data.error;
+                messageArea.className = 'message-area error-message';
+                messageArea.style.display = 'block';
+                
+                // Highlight problematic fields
+                if (data.message && data.message.toLowerCase().includes('email')) {
+                    document.querySelector('input[name="email"]').style.borderColor = '#ef4444';
+                }
+            }
+            
+            submitBtn.textContent = originalBtnText;
+            submitBtn.disabled = false;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            
+            // Fallback: submit form normally if AJAX fails
+            messageArea.textContent = "Something went wrong. Please try again.";
+            messageArea.className = 'message-area error-message';
+            messageArea.style.display = 'block';
+            
+            submitBtn.textContent = originalBtnText;
+            submitBtn.disabled = false;
+        });
+        
+        return false;
+    });
+
+    /* Input validation on typing */
+    document.querySelectorAll('#signupForm input, #signupForm select').forEach(el => {
+        el.addEventListener('input', function() {
+            if (this.value.trim()) {
+                this.style.borderColor = '#2563eb';
+                this.style.boxShadow = '0 0 0 3px rgba(37, 99, 235, 0.1)';
+            }
+        });
+    });
+
+    /* OTP verify */
+    function verifyOTP(){
+        const otpInput = document.getElementById("otpInput");
+        const otpError = document.getElementById("otpError");
+        const verifyBtn = document.querySelector('.modal-content .auth-btn');
+        const originalText = verifyBtn.textContent;
+        
+        if(!otpInput.value.trim()) {
+            otpError.innerText = "Please enter OTP";
+            otpError.style.color = '#ef4444';
+            otpInput.style.borderColor = '#ef4444';
+            otpInput.style.boxShadow = '0 0 0 3px rgba(239, 68, 68, 0.1)';
+            otpInput.focus();
+            return;
+        }
+        
+        // Show loading state
+        verifyBtn.textContent = "Verifying...";
+        verifyBtn.style.background = '#1d4ed8';
+        verifyBtn.disabled = true;
+        
+        // Get CSRF token
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        
+        fetch("/accounts/verify-otp-ajax/",{
+            method:"POST",
+            headers:{
+                "X-CSRFToken": csrfToken,
+                "Content-Type":"application/x-www-form-urlencoded",
+                "Accept": "application/json"
+            },
+            body:"otp=" + otpInput.value
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success){
+                otpError.innerText = "";
+                otpError.classList.add('success');
+                otpError.innerText = "✓ Verification successful! Redirecting...";
+                otpError.style.color = '#059669';
+                otpInput.style.borderColor = '#10b981';
+                otpInput.style.boxShadow = '0 0 0 3px rgba(16, 185, 129, 0.1)';
+                
+                // Add success animation
+                verifyBtn.textContent = "✓ Verified!";
+                verifyBtn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    window.location.href="/accounts/login/";
+                }, 1500);
+            }else{
+                otpError.innerText = data.message || "Invalid OTP";
+                otpError.style.color = '#ef4444';
+                otpInput.style.borderColor = '#ef4444';
+                otpInput.style.boxShadow = '0 0 0 3px rgba(239, 68, 68, 0.1)';
+                verifyBtn.textContent = originalText;
+                verifyBtn.style.background = '#2563eb';
+                verifyBtn.disabled = false;
+            }
+        })
+        .catch(error => {
+            otpError.innerText = "Verification failed. Please try again.";
+            otpError.style.color = '#ef4444';
+            verifyBtn.textContent = originalText;
+            verifyBtn.style.background = '#2563eb';
+            verifyBtn.disabled = false;
+        });
+    }
+
+    /* Resend OTP */
+    function resendOTP(){
+        const otpError = document.getElementById("otpError");
+        const resendLink = document.getElementById("resendLink");
+        const originalText = resendLink.textContent;
+        
+        otpError.innerText = "Sending OTP...";
+        otpError.style.color = "#2563eb";
+        resendLink.textContent = "Sending...";
+        resendLink.classList.add('loading');
+        
+        // Get CSRF token
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        
+        fetch("/accounts/resend-otp-ajax/", {
+            headers: {
+                "X-CSRFToken": csrfToken,
+                "Accept": "application/json"
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success){
+                otpError.innerText = "✓ OTP resent to your email";
+                otpError.style.color = "#059669";
+                otpError.classList.add('success');
+                
+                // Also log the new OTP to console if available
+                if (data.otp) {
+                    console.log('📧 New OTP Generated:', data.otp);
+                    console.log('📝 Copy this new OTP from console:', data.otp);
+                }
+                
+                // Reset link after 2 seconds
+                setTimeout(() => {
+                    resendLink.textContent = originalText;
+                    resendLink.classList.remove('loading');
+                }, 2000);
+            } else {
+                otpError.innerText = data.message || "Failed to resend OTP";
+                otpError.style.color = "#ef4444";
+                resendLink.textContent = originalText;
+                resendLink.classList.remove('loading');
+            }
+        })
+        .catch(error => {
+            otpError.innerText = "Network error. Please try again.";
+            otpError.style.color = "#ef4444";
+            resendLink.textContent = originalText;
+            resendLink.classList.remove('loading');
+        });
+    }
+    
+    /* Close modal when clicking outside */
+    document.addEventListener('click', function(event) {
+        const modal = document.getElementById('otpModal');
+        if (event.target === modal && modal.style.display === 'flex') {
+            modal.style.display = 'none';
         }
     });
-}
-
-function resendOTP(){
-    fetch("/accounts/resend-otp-ajax/")
-    .then(res => res.json())
-    .then(data => {
-        if(data.success){
-            document.getElementById("otpError").innerText="OTP resent to your email";
+    
+    /* Enter key to verify OTP */
+    document.getElementById('otpInput')?.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            verifyOTP();
         }
     });
-}
-</script>
-
-{% endblock %}
+    
+    /* Form input focus effects */
+    document.querySelectorAll('input, select').forEach(el => {
+        el.addEventListener('focus', function() {
+            this.style.borderColor = '#2563eb';
+            this.style.boxShadow = '0 0 0 3px rgba(37, 99, 235, 0.1)';
+        });
+        
+        el.addEventListener('blur', function() {
+            if (!this.value.trim()) {
+                this.style.borderColor = '#dbeafe';
+                this.style.boxShadow = 'none';
+            }
+        });
+    });
+    
+    /* Handle Enter key in form */
+    document.querySelectorAll('#signupForm input').forEach(input => {
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const form = document.getElementById('signupForm');
+                form.dispatchEvent(new Event('submit'));
+            }
+        });
+    });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1725 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="edit-job-wrapper">
+    <!-- Main Container -->
+    <div class="edit-job-container">
+        <!-- Page Header -->
+        <header class="edit-job-header">
+            <div class="header-content">
+                <div class="back-navigation">
+                    <a href="{% url 'my_jobs' %}" class="back-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 12H5M12 19l-7-7 7-7"/>
+                        </svg>
+                        Back to Jobs
+                    </a>
+                </div>
+                <div class="header-main">
+                    <div class="header-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                        </svg>
+                    </div>
+                    <div class="header-text">
+                        <h1 class="page-title">Edit Job Listing</h1>
+                        <p class="page-subtitle">Update your job posting details</p>
+                    </div>
+                </div>
+                <div class="job-info-badge">
+                    <span class="badge-icon">📝</span>
+                    <span>Editing: {{ job.title }}</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Form Section -->
+        <main class="edit-job-main">
+            <div class="form-card">
+                <form method="POST" class="job-edit-form" id="jobEditForm">
+                    {% csrf_token %}
+                    
+                    <!-- Progress Indicator -->
+                    <div class="form-progress">
+                        <div class="progress-steps">
+                            <div class="step active" data-step="1">
+                                <span class="step-number">1</span>
+                                <span class="step-label">Basic Info</span>
+                            </div>
+                            <div class="step" data-step="2">
+                                <span class="step-number">2</span>
+                                <span class="step-label">Details</span>
+                            </div>
+                            <div class="step" data-step="3">
+                                <span class="step-number">3</span>
+                                <span class="step-label">Review</span>
+                            </div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 33%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Step 1: Basic Information -->
+                    <div class="form-step active" data-step="1">
+                        <div class="step-header">
+                            <h3 class="step-title">
+                                <span class="step-icon">📋</span>
+                                Basic Information
+                            </h3>
+                            <p class="step-description">Enter the fundamental details about this position</p>
+                        </div>
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="jobTitle" class="form-label">
+                                    <span class="label-text">Job Title *</span>
+                                    <span class="label-hint">What position are you hiring for?</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-icon">💼</span>
+                                    <input type="text" 
+                                           id="jobTitle" 
+                                           name="title" 
+                                           value="{{ job.title }}"
+                                           class="form-input"
+                                           placeholder="e.g., Senior Python Developer"
+                                           required
+                                           data-validate="true">
+                                </div>
+                                <div class="input-feedback"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="jobLocation" class="form-label">
+                                    <span class="label-text">Location *</span>
+                                    <span class="label-hint">Where is this job located?</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-icon">📍</span>
+                                    <input type="text" 
+                                           id="jobLocation" 
+                                           name="location" 
+                                           value="{{ job.location }}"
+                                           class="form-input"
+                                           placeholder="e.g., New York, Remote, Hybrid"
+                                           required
+                                           data-validate="true">
+                                </div>
+                                <div class="input-feedback"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="jobSalary" class="form-label">
+                                    <span class="label-text">Salary Range *</span>
+                                    <span class="label-hint">Expected compensation for this role</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-icon">💰</span>
+                                    <input type="text" 
+                                           id="jobSalary" 
+                                           name="salary" 
+                                           value="{{ job.salary }}"
+                                           class="form-input"
+                                           placeholder="e.g., $80,000 - $120,000"
+                                           required
+                                           data-validate="true">
+                                </div>
+                                <div class="input-feedback"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="jobType" class="form-label">
+                                    <span class="label-text">Employment Type *</span>
+                                    <span class="label-hint">Select the type of employment</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-icon">⏰</span>
+                                    <select id="jobType" name="job_type" class="form-select" required data-validate="true">
+                                        <option value="" disabled>Select job type</option>
+                                        <option value="full_time" {% if job.job_type == "full_time" %}selected{% endif %}>Full Time</option>
+                                        <option value="part_time" {% if job.job_type == "part_time" %}selected{% endif %}>Part Time</option>
+                                        <option value="contract" {% if job.job_type == "contract" %}selected{% endif %}>Contract</option>
+                                        <option value="internship" {% if job.job_type == "internship" %}selected{% endif %}>Internship</option>
+                                        <option value="remote" {% if job.job_type == "remote" %}selected{% endif %}>Remote</option>
+                                        <option value="freelance" {% if job.job_type == "freelance" %}selected{% endif %}>Freelance</option>
+                                    </select>
+                                </div>
+                                <div class="input-feedback"></div>
+                            </div>
+                        </div>
+
+                        <div class="step-actions">
+                            <button type="button" class="btn btn-next" data-next="2">
+                                Next: Job Details
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Job Details -->
+                    <div class="form-step" data-step="2">
+                        <div class="step-header">
+                            <h3 class="step-title">
+                                <span class="step-icon">📝</span>
+                                Job Details
+                            </h3>
+                            <p class="step-description">Describe the role, responsibilities, and requirements</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="jobDescription" class="form-label">
+                                <span class="label-text">Job Description *</span>
+                                <span class="label-hint">Detailed information about the role</span>
+                            </label>
+                            <div class="textarea-wrapper">
+                                <textarea id="jobDescription" 
+                                          name="description" 
+                                          class="form-textarea"
+                                          rows="10"
+                                          placeholder="Describe the role, responsibilities, requirements, and benefits..."
+                                          required
+                                          data-validate="true">{{ job.description }}</textarea>
+                                <div class="textarea-tools">
+                                    <div class="char-count">
+                                        <span id="charCount">0</span> / 5000 characters
+                                    </div>
+                                    <div class="format-tips">
+                                        <button type="button" class="format-btn" data-format="bold" title="Bold">
+                                            <strong>B</strong>
+                                        </button>
+                                        <button type="button" class="format-btn" data-format="italic" title="Italic">
+                                            <em>I</em>
+                                        </button>
+                                        <button type="button" class="format-btn" data-format="list" title="Bullet List">
+                                            • List
+                                        </button>
+                                    </div>
+                             </div>
+                            </div>
+                            <div class="input-feedback"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="requirements-section">
+                                <h4 class="section-subtitle">Suggested Sections (Optional)</h4>
+                                <div class="requirements-tags">
+                                    <button type="button" class="tag-btn" data-insert="Responsibilities">Responsibilities</button>
+                                    <button type="button" class="tag-btn" data-insert="Requirements">Requirements</button>
+                                    <button type="button" class="tag-btn" data-insert="Qualifications">Qualifications</button>
+                                    <button type="button" class="tag-btn" data-insert="Benefits">Benefits</button>
+                                    <button type="button" class="tag-btn" data-insert="About Company">About Company</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="step-actions">
+                            <button type="button" class="btn btn-prev" data-prev="1">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                                </svg>
+                                Previous
+                            </button>
+                            <button type="button" class="btn btn-next" data-next="3">
+                                Next: Review
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Review & Submit -->
+                    <div class="form-step" data-step="3">
+                        <div class="step-header">
+                            <h3 class="step-title">
+                                <span class="step-icon">👁️</span>
+                                Review & Submit
+                            </h3>
+                            <p class="step-description">Review all information before updating</p>
+                        </div>
+
+                        <div class="review-summary">
+                            <div class="summary-card">
+                                <h4 class="summary-title">Job Preview</h4>
+                                
+                                <div class="summary-item">
+                                    <span class="summary-label">Job Title</span>
+                                    <span class="summary-value" id="reviewTitle">{{ job.title }}</span>
+                                </div>
+                                
+                                <div class="summary-item">
+                                    <span class="summary-label">Location</span>
+                                    <span class="summary-value" id="reviewLocation">{{ job.location }}</span>
+                                </div>
+                                
+                                <div class="summary-item">
+                                    <span class="summary-label">Salary Range</span>
+                                    <span class="summary-value" id="reviewSalary">{{ job.salary }}</span>
+                                </div>
+                                
+                                <div class="summary-item">
+                                    <span class="summary-label">Employment Type</span>
+                                    <span class="summary-value" id="reviewType">
+                                        {% if job.job_type == "full_time" %}Full Time
+                                        {% elif job.job_type == "part_time" %}Part Time
+                                        {% elif job.job_type == "contract" %}Contract
+                                        {% elif job.job_type == "internship" %}Internship
+                                        {% elif job.job_type == "remote" %}Remote
+                                        {% else %}{{ job.job_type }}
+                                        {% endif %}
+                                    </span>
+                                </div>
+                                
+                                <div class="summary-item full-width">
+                                    <span class="summary-label">Description Preview</span>
+                                    <div class="summary-value" id="reviewDescription">
+                                        {{ job.description|truncatechars:200 }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="confirmUpdate" required>
+                                    <label for="confirmUpdate" class="checkbox-label">
+                                        I confirm that all information is accurate and I have the authority to update this job listing.
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="step-actions">
+                            <button type="button" class="btn btn-prev" data-prev="2">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                                </svg>
+                                Previous
+                            </button>
+                            <button type="submit" class="btn btn-submit">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
+                                    <path d="M17 21v-8H7v8M7 3v5h8"/>
+                                </svg>
+                                Update Job Listing
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Sidebar - Help & Tips -->
+            <aside class="form-sidebar">
+                <div class="sidebar-card">
+                    <div class="sidebar-header">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M12 16v-4M12 8h.01"/>
+                        </svg>
+                        <h3 class="sidebar-title">Tips for Success</h3>
+                    </div>
+                    
+                    <div class="sidebar-content">
+                        <div class="tip-item">
+                            <div class="tip-icon">🎯</div>
+                            <div class="tip-content">
+                                <h4>Clear Job Title</h4>
+                                <p>Use specific titles like "Senior Python Developer" instead of just "Developer"</p>
+                            </div>
+                        </div>
+                        
+                        <div class="tip-item">
+                            <div class="tip-icon">💡</div>
+                            <div class="tip-content">
+                                <h4>Detailed Description</h4>
+                                <p>Include responsibilities, requirements, and benefits to attract quality candidates</p>
+                            </div>
+                        </div>
+                        
+                        <div class="tip-item">
+                            <div class="tip-icon">💰</div>
+                            <div class="tip-content">
+                                <h4>Competitive Salary</h4>
+                                <p>Research market rates for similar positions in your location</p>
+                            </div>
+                        </div>
+                        
+                        <div class="tip-item">
+                            <div class="tip-icon">⚡</div>
+                            <div class="tip-content">
+                                <h4>Quick Updates</h4>
+                                <p>Regularly update your listings to keep them fresh and relevant</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-card">
+                    <div class="sidebar-header">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2"/>
+                            <path d="M3 9h18M9 21V9"/>
+                        </svg>
+                        <h3 class="sidebar-title">Quick Actions</h3>
+                    </div>
+                    
+                    <div class="sidebar-content">
+                        <a href="{% url 'my_jobs' %}" class="sidebar-action">
+                            <span class="action-icon">📋</span>
+                            View All Jobs
+                        </a>
+                        <button class="sidebar-action" id="previewJob">
+                            <span class="action-icon">👁️</span>
+                            Preview Job
+                        </button>
+                        <button class="sidebar-action" id="saveDraft">
+                            <span class="action-icon">💾</span>
+                            Save as Draft
+                        </button>
+                        <a href="#" class="sidebar-action">
+                            <span class="action-icon">📄</span>
+                            Use Template
+                        </a>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <!-- Footer -->
+        
+    </div>
+</div>
+
+<!-- Success Toast -->
+<div id="successToast" class="toast">
+    <div class="toast-content">
+        <div class="toast-icon success">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <path d="M20 6L9 17l-5-5"/>
+            </svg>
+        </div>
+        <div class="toast-message">
+            <h4>Job Updated Successfully!</h4>
+            <p>Your job listing has been updated and published</p>
+        </div>
+        <button class="toast-close" onclick="hideToast()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 6L6 18M6 6l12 12"/>
+            </svg>
+        </button>
+    </div>
+</div>
+
+<style>
+    /* CSS Reset & Base Styles */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    :root {
+        /* Color System - White Theme */
+        --primary: #ffffff;
+        --primary-dark: #f0f0f0;
+        --primary-light: #fafafa;
+        --secondary: #e0e0e0;
+        --secondary-dark: #d0d0d0;
+        --error: #ff6b6b;
+        --warning: #ffa726;
+        --success: #4caf50;
+        --info: #42a5f5;
+        
+        /* Neutral Colors */
+        --gray-50: #ffffff;
+        --gray-100: #f5f5f5;
+        --gray-200: #e0e0e0;
+        --gray-300: #c0c0c0;
+        --gray-400: #9e9e9e;
+        --gray-500: #757575;
+        --gray-600: #616161;
+        --gray-700: #424242;
+        --gray-800: #212121;
+        --gray-900: #000000;
+        
+        /* Typography */
+        --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        --font-mono: 'SF Mono', Monaco, 'Cascadia Mono', 'Segoe UI Mono', monospace;
+        
+        /* Spacing */
+        --space-1: 0.25rem;
+        --space-2: 0.5rem;
+        --space-3: 0.75rem;
+        --space-4: 1rem;
+        --space-6: 1.5rem;
+        --space-8: 2rem;
+        --space-12: 3rem;
+        --space-16: 4rem;
+        
+        /* Border Radius */
+        --radius-sm: 0.375rem;
+        --radius-md: 0.5rem;
+        --radius-lg: 0.75rem;
+        --radius-xl: 1rem;
+        --radius-2xl: 1.5rem;
+        
+        /* Shadows */
+        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        
+        /* Transitions */
+        --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+        --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+        --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body {
+        font-family: var(--font-sans);
+        background: white;
+        min-height: 100vh;
+        color: var(--gray-800);
+        line-height: 1.5;
+    }
+
+    /* Main Wrapper */
+    .edit-job-wrapper {
+        min-height: 100vh;
+        padding: var(--space-4);
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+    }
+
+    .edit-job-container {
+        width: 100%;
+        max-width: 1400px;
+        background: white;
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-xl);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        min-height: 90vh;
+    }
+
+    /* Header Styles - White */
+    .edit-job-header {
+        background: white;
+        color: var(--gray-800);
+        padding: var(--space-8) var(--space-8) var(--space-12);
+        position: relative;
+        overflow: hidden;
+        border-bottom: 1px solid var(--gray-200);
+    }
+
+    .edit-job-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(0,0,0,0.05) 1px, transparent 1px);
+        background-size: 20px 20px;
+        opacity: 0.5;
+    }
+
+    .header-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .back-navigation {
+        margin-bottom: var(--space-6);
+    }
+
+    .back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        color: var(--gray-600);
+        text-decoration: none;
+        font-size: 0.875rem;
+        font-weight: 500;
+        transition: all var(--transition-fast);
+        padding: var(--space-2) var(--space-3);
+        border-radius: var(--radius-sm);
+        background: var(--gray-100);
+        border: 1px solid var(--gray-200);
+    }
+
+    .back-btn:hover {
+        color: var(--gray-800);
+        background: var(--gray-200);
+        border-color: var(--gray-300);
+    }
+
+    .back-btn svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .header-main {
+        display: flex;
+        align-items: center;
+        gap: var(--space-6);
+        margin-bottom: var(--space-6);
+    }
+
+    .header-icon {
+        width: 64px;
+        height: 64px;
+        background: var(--gray-100);
+        border-radius: var(--radius-lg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--gray-200);
+    }
+
+    .header-icon svg {
+        width: 32px;
+        height: 32px;
+        stroke-width: 2;
+        stroke: var(--gray-700);
+    }
+
+    .header-text {
+        flex: 1;
+    }
+
+    .page-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: var(--space-2);
+        line-height: 1.2;
+        color: var(--gray-900);
+    }
+
+    .page-subtitle {
+        font-size: 1.125rem;
+        color: var(--gray-600);
+        font-weight: 400;
+    }
+
+    .job-info-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-3);
+        background: var(--gray-100);
+        padding: var(--space-3) var(--space-6);
+        border-radius: var(--radius-xl);
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--gray-700);
+        border: 1px solid var(--gray-200);
+    }
+
+    .badge-icon {
+        font-size: 1.125rem;
+    }
+
+    /* Main Content */
+    .edit-job-main {
+        flex: 1;
+        padding: var(--space-8);
+        display: grid;
+        grid-template-columns: 1fr 350px;
+        gap: var(--space-8);
+        background: white;
+    }
+
+    /* Form Card */
+    .form-card {
+        background: white;
+        border-radius: var(--radius-xl);
+        padding: var(--space-8);
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--gray-200);
+    }
+
+    /* Progress Indicator */
+    .form-progress {
+        margin-bottom: var(--space-8);
+    }
+
+    .progress-steps {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: var(--space-4);
+        position: relative;
+    }
+
+    .progress-steps::before {
+        content: '';
+        position: absolute;
+        top: 16px;
+        left: 25px;
+        right: 25px;
+        height: 2px;
+        background: var(--gray-200);
+        z-index: 0;
+    }
+
+    .step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        z-index: 1;
+        transition: all var(--transition-normal);
+    }
+
+    .step.active .step-number {
+        background: var(--gray-800);
+        color: white;
+        border-color: var(--gray-800);
+        transform: scale(1.1);
+    }
+
+    .step.active .step-label {
+        color: var(--gray-900);
+        font-weight: 600;
+    }
+
+    .step-number {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: white;
+        border: 2px solid var(--gray-300);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--gray-500);
+        margin-bottom: var(--space-2);
+        transition: all var(--transition-normal);
+    }
+
+    .step-label {
+        font-size: 0.75rem;
+        color: var(--gray-500);
+        font-weight: 500;
+        transition: color var(--transition-normal);
+    }
+
+    .progress-bar {
+        height: 4px;
+        background: var(--gray-200);
+        border-radius: 2px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: var(--gray-800);
+        border-radius: 2px;
+        transition: width var(--transition-normal);
+    }
+
+    /* Form Steps */
+    .form-step {
+        display: none;
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    .form-step.active {
+        display: block;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .step-header {
+        margin-bottom: var(--space-8);
+    }
+
+    .step-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--gray-900);
+        margin-bottom: var(--space-2);
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+    }
+
+    .step-icon {
+        font-size: 1.25rem;
+    }
+
+    .step-description {
+        color: var(--gray-600);
+        font-size: 0.875rem;
+    }
+
+    /* Form Grid */
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-6);
+        margin-bottom: var(--space-8);
+    }
+
+    /* Form Groups */
+    .form-group {
+        margin-bottom: var(--space-6);
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: var(--space-3);
+    }
+
+    .label-text {
+        display: block;
+        font-weight: 600;
+        color: var(--gray-700);
+        margin-bottom: var(--space-1);
+    }
+
+    .label-hint {
+        display: block;
+        font-size: 0.75rem;
+        color: var(--gray-500);
+    }
+
+    .input-group {
+        position: relative;
+    }
+
+    .input-icon {
+        position: absolute;
+        left: var(--space-4);
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--gray-400);
+        font-size: 1.125rem;
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+        width: 100%;
+        padding: var(--space-4) var(--space-4) var(--space-4) 3rem;
+        border: 1px solid var(--gray-300);
+        border-radius: var(--radius-lg);
+        background: white;
+        font-size: 0.875rem;
+        color: var(--gray-800);
+        transition: all var(--transition-fast);
+    }
+
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+        outline: none;
+        border-color: var(--gray-500);
+        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%239CA3AF' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right var(--space-4) center;
+        background-size: 16px;
+        padding-right: 3rem;
+    }
+
+    /* Textarea */
+    .textarea-wrapper {
+        position: relative;
+    }
+
+    .form-textarea {
+        min-height: 200px;
+        resize: vertical;
+        padding: var(--space-4);
+        line-height: 1.5;
+        font-family: var(--font-sans);
+    }
+
+    .textarea-tools {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: var(--space-2);
+    }
+
+    .char-count {
+        font-size: 0.75rem;
+        color: var(--gray-500);
+    }
+
+    .format-tips {
+        display: flex;
+        gap: var(--space-2);
+    }
+
+    .format-btn {
+        padding: var(--space-1) var(--space-2);
+        background: var(--gray-100);
+        border: 1px solid var(--gray-300);
+        border-radius: var(--radius-sm);
+        font-size: 0.75rem;
+        color: var(--gray-700);
+        cursor: pointer;
+        transition: all var(--transition-fast);
+    }
+
+    .format-btn:hover {
+        background: var(--gray-200);
+    }
+
+    /* Requirements Tags */
+    .requirements-section {
+        background: white;
+        border: 1px solid var(--gray-200);
+        border-radius: var(--radius-lg);
+        padding: var(--space-6);
+    }
+
+    .section-subtitle {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--gray-700);
+        margin-bottom: var(--space-4);
+    }
+
+    .requirements-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-2);
+    }
+
+    .tag-btn {
+        padding: var(--space-2) var(--space-3);
+        background: var(--gray-100);
+        color: var(--gray-700);
+        border: 1px solid var(--gray-300);
+        border-radius: var(--radius-md);
+        font-size: 0.75rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all var(--transition-fast);
+    }
+
+    .tag-btn:hover {
+        background: var(--gray-200);
+        border-color: var(--gray-400);
+    }
+
+    /* Review Summary */
+    .review-summary {
+        margin-bottom: var(--space-8);
+    }
+
+    .summary-card {
+        background: white;
+        border: 1px solid var(--gray-200);
+        border-radius: var(--radius-lg);
+        padding: var(--space-6);
+        margin-bottom: var(--space-6);
+    }
+
+    .summary-title {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: var(--gray-900);
+        margin-bottom: var(--space-4);
+        padding-bottom: var(--space-3);
+        border-bottom: 1px solid var(--gray-200);
+    }
+
+    .summary-item {
+        display: flex;
+        margin-bottom: var(--space-4);
+    }
+
+    .summary-item.full-width {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .summary-label {
+        flex: 0 0 140px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--gray-600);
+    }
+
+    .summary-value {
+        flex: 1;
+        font-size: 0.875rem;
+        color: var(--gray-800);
+    }
+
+    .summary-item.full-width .summary-value {
+        margin-top: var(--space-2);
+        background: var(--gray-50);
+        padding: var(--space-4);
+        border-radius: var(--radius-md);
+        line-height: 1.6;
+        border: 1px solid var(--gray-200);
+    }
+
+    /* Checkbox */
+    .checkbox-group {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--space-3);
+    }
+
+    .checkbox-group input[type="checkbox"] {
+        margin-top: var(--space-1);
+        width: 16px;
+        height: 16px;
+        border: 2px solid var(--gray-300);
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+    }
+
+    .checkbox-label {
+        font-size: 0.875rem;
+        color: var(--gray-700);
+        line-height: 1.4;
+    }
+
+    /* Buttons */
+    .step-actions {
+        display: flex;
+        justify-content: space-between;
+        padding-top: var(--space-8);
+        border-top: 1px solid var(--gray-200);
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-3);
+        padding: var(--space-3) var(--space-6);
+        border: 1px solid var(--gray-300);
+        border-radius: var(--radius-lg);
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all var(--transition-fast);
+        text-decoration: none;
+        background: white;
+        color: var(--gray-700);
+    }
+
+    .btn-prev {
+        background: var(--gray-100);
+    }
+
+    .btn-prev:hover {
+        background: var(--gray-200);
+        border-color: var(--gray-400);
+    }
+
+    .btn-next,
+    .btn-submit {
+        background: var(--gray-800);
+        color: white;
+        border-color: var(--gray-800);
+    }
+
+    .btn-next:hover,
+    .btn-submit:hover {
+        background: var(--gray-900);
+        border-color: var(--gray-900);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .btn-submit {
+        padding: var(--space-4) var(--space-8);
+    }
+
+    .btn svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    /* Sidebar */
+    .form-sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-6);
+    }
+
+    .sidebar-card {
+        background: white;
+        border-radius: var(--radius-lg);
+        padding: var(--space-6);
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--gray-200);
+    }
+
+    .sidebar-header {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        margin-bottom: var(--space-6);
+    }
+
+    .sidebar-header svg {
+        color: var(--gray-700);
+    }
+
+    .sidebar-title {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: var(--gray-900);
+    }
+
+    .sidebar-content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+    }
+
+    .tip-item {
+        display: flex;
+        gap: var(--space-3);
+    }
+
+    .tip-icon {
+        font-size: 1.25rem;
+        flex-shrink: 0;
+    }
+
+    .tip-content h4 {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--gray-800);
+        margin-bottom: var(--space-1);
+    }
+
+    .tip-content p {
+        font-size: 0.75rem;
+        color: var(--gray-600);
+        line-height: 1.4;
+    }
+
+    .sidebar-action {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        padding: var(--space-3);
+        background: white;
+        border: 1px solid var(--gray-200);
+        border-radius: var(--radius-md);
+        text-decoration: none;
+        color: var(--gray-700);
+        font-size: 0.875rem;
+        font-weight: 500;
+        transition: all var(--transition-fast);
+        cursor: pointer;
+        width: 100%;
+    }
+
+    .sidebar-action:hover {
+        background: var(--gray-100);
+        border-color: var(--gray-300);
+        transform: translateX(2px);
+    }
+
+    .action-icon {
+        font-size: 1.125rem;
+    }
+
+    /* Footer */
+    .edit-job-footer {
+        border-top: 1px solid var(--gray-200);
+        padding: var(--space-6) var(--space-8);
+        background: white;
+    }
+
+    .footer-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .footer-links {
+        display: flex;
+        gap: var(--space-6);
+    }
+
+    .footer-links a {
+        font-size: 0.75rem;
+        color: var(--gray-600);
+        text-decoration: none;
+        transition: color var(--transition-fast);
+    }
+
+    .footer-links a:hover {
+        color: var(--gray-800);
+    }
+
+    .footer-status {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        font-size: 0.75rem;
+        color: var(--gray-600);
+    }
+
+    .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--success);
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0% { opacity: 1; }
+        50% { opacity: 0.5; }
+        100% { opacity: 1; }
+    }
+
+    /* Toast Notification */
+    .toast {
+        position: fixed;
+        bottom: var(--space-8);
+        right: var(--space-8);
+        background: white;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-xl);
+        padding: var(--space-6);
+        min-width: 350px;
+        max-width: 400px;
+        display: none;
+        z-index: 1000;
+        animation: slideInRight 0.3s ease;
+        border: 1px solid var(--gray-200);
+    }
+
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    .toast-content {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--space-4);
+    }
+
+    .toast-icon.success svg {
+        color: var(--success);
+    }
+
+    .toast-message h4 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--gray-900);
+        margin-bottom: var(--space-1);
+    }
+
+    .toast-message p {
+        font-size: 0.875rem;
+        color: var(--gray-600);
+    }
+
+    .toast-close {
+        background: none;
+        border: none;
+        color: var(--gray-400);
+        cursor: pointer;
+        padding: var(--space-1);
+        margin-left: auto;
+        align-self: flex-start;
+    }
+
+    .toast-close:hover {
+        color: var(--gray-600);
+    }
+
+    /* Input Feedback */
+    .input-feedback {
+        font-size: 0.75rem;
+        margin-top: var(--space-2);
+        min-height: 1rem;
+    }
+
+    .input-feedback.error {
+        color: var(--error);
+    }
+
+    .input-feedback.success {
+        color: var(--success);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1200px) {
+        .edit-job-main {
+            grid-template-columns: 1fr;
+            gap: var(--space-6);
+        }
+        
+        .form-sidebar {
+            order: -1;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .edit-job-wrapper {
+            padding: 0;
+        }
+        
+        .edit-job-container {
+            border-radius: 0;
+            min-height: 100vh;
+            box-shadow: none;
+        }
+        
+        .edit-job-header {
+            padding: var(--space-6) var(--space-6) var(--space-8);
+        }
+        
+        .edit-job-main {
+            padding: var(--space-6);
+        }
+        
+        .form-card {
+            padding: var(--space-6);
+        }
+        
+        .form-grid {
+            grid-template-columns: 1fr;
+            gap: var(--space-4);
+        }
+        
+        .page-title {
+            font-size: 2rem;
+        }
+        
+        .header-main {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: var(--space-4);
+        }
+        
+        .header-icon {
+            width: 48px;
+            height: 48px;
+        }
+        
+        .header-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+        
+        .step-actions {
+            flex-direction: column;
+            gap: var(--space-4);
+        }
+        
+        .btn {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .toast {
+            left: var(--space-4);
+            right: var(--space-4);
+            bottom: var(--space-4);
+            max-width: none;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .edit-job-header {
+            padding: var(--space-4) var(--space-4) var(--space-6);
+        }
+        
+        .edit-job-main {
+            padding: var(--space-4);
+        }
+        
+        .form-card {
+            padding: var(--space-4);
+        }
+        
+        .progress-steps {
+            justify-content: center;
+            gap: var(--space-8);
+        }
+        
+        .step-label {
+            display: none;
+        }
+        
+        .footer-content {
+            flex-direction: column;
+            gap: var(--space-4);
+            text-align: center;
+        }
+        
+        .footer-links {
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: var(--space-4);
+        }
+        
+        .sidebar-card {
+            padding: var(--space-4);
+        }
+    }
+
+    /* Print styles */
+    @media print {
+        .edit-job-wrapper {
+            padding: 0;
+        }
+        
+        .edit-job-container {
+            box-shadow: none;
+            border-radius: 0;
+        }
+        
+        .back-btn,
+        .btn,
+        .sidebar-action,
+        .footer-links,
+        .format-tips,
+        .requirements-tags {
+            display: none !important;
+        }
+        
+        .edit-job-header {
+            background: white !important;
+            color: black !important;
+            padding: 1rem !important;
+        }
+        
+        .header-icon svg {
+            stroke: black !important;
+        }
+        
+        .edit-job-main {
+            padding: 1rem !important;
+        }
+        
+        .form-sidebar {
+            display: none !important;
+        }
+        
+        .form-card {
+            box-shadow: none !important;
+            border: 1px solid #ddd !important;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Multi-step form functionality
+        const steps = document.querySelectorAll('.form-step');
+        const nextButtons = document.querySelectorAll('.btn-next');
+        const prevButtons = document.querySelectorAll('.btn-prev');
+        const progressFill = document.querySelector('.progress-fill');
+        const stepElements = document.querySelectorAll('.step');
+        
+        let currentStep = 1;
+        const totalSteps = steps.length;
+        
+        // Initialize character counter
+        const textarea = document.getElementById('jobDescription');
+        const charCount = document.getElementById('charCount');
+        
+        if (textarea && charCount) {
+            charCount.textContent = textarea.value.length;
+            textarea.addEventListener('input', function() {
+                charCount.textContent = this.value.length;
+                updateReview('description', this.value);
+            });
+        }
+        
+        // Update review section
+        function updateReview(field, value) {
+            const reviewElement = document.getElementById(`review${field.charAt(0).toUpperCase() + field.slice(1)}`);
+            if (reviewElement) {
+                if (field === 'description') {
+                    reviewElement.textContent = value.substring(0, 200) + (value.length > 200 ? '...' : '');
+                } else {
+                    reviewElement.textContent = value;
+                }
+            }
+        }
+        
+        // Format buttons for textarea
+        document.querySelectorAll('.format-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const format = this.dataset.format;
+                const start = textarea.selectionStart;
+                const end = textarea.selectionEnd;
+                const selectedText = textarea.value.substring(start, end);
+                
+                let formattedText = '';
+                switch(format) {
+                    case 'bold':
+                        formattedText = `**${selectedText}**`;
+                        break;
+                    case 'italic':
+                        formattedText = `*${selectedText}*`;
+                        break;
+                    case 'list':
+                        formattedText = `\n• ${selectedText.replace(/\n/g, '\n• ')}`;
+                        break;
+                }
+                
+                textarea.value = textarea.value.substring(0, start) + formattedText + textarea.value.substring(end);
+                textarea.focus();
+                textarea.selectionStart = textarea.selectionEnd = start + formattedText.length;
+                updateReview('description', textarea.value);
+            });
+        });
+        
+        // Tag buttons for inserting sections
+        document.querySelectorAll('.tag-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const section = this.dataset.insert;
+                const text = `\n\n### ${section}\n\n`;
+                
+                textarea.value += text;
+                textarea.focus();
+                textarea.scrollTop = textarea.scrollHeight;
+                updateReview('description', textarea.value);
+            });
+        });
+        
+        // Form input updates
+        document.querySelectorAll('input[name="title"], input[name="location"], input[name="salary"], select[name="job_type"]').forEach(input => {
+            input.addEventListener('input', function() {
+                updateReview(this.name, this.value);
+            });
+        });
+        
+        // Next button click
+        nextButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const nextStep = parseInt(this.dataset.next);
+                if (validateStep(currentStep)) {
+                    changeStep(nextStep);
+                }
+            });
+        });
+        
+        // Previous button click
+        prevButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const prevStep = parseInt(this.dataset.prev);
+                changeStep(prevStep);
+            });
+        });
+        
+        // Change step function
+        function changeStep(step) {
+            // Hide current step
+            document.querySelector(`.form-step[data-step="${currentStep}"]`).classList.remove('active');
+            document.querySelector(`.step[data-step="${currentStep}"]`).classList.remove('active');
+            
+            // Show new step
+            document.querySelector(`.form-step[data-step="${step}"]`).classList.add('active');
+            document.querySelector(`.step[data-step="${step}"]`).classList.add('active');
+            
+            // Update progress bar
+            const progressPercentage = ((step - 1) / (totalSteps - 1)) * 100;
+            progressFill.style.width = `${progressPercentage}%`;
+            
+            // Update current step
+            currentStep = step;
+            
+            // Scroll to top of form
+            document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        
+        // Validate current step
+        function validateStep(step) {
+            const currentStepElement = document.querySelector(`.form-step[data-step="${step}"]`);
+            const inputs = currentStepElement.querySelectorAll('[data-validate="true"]');
+            let isValid = true;
+            
+            inputs.forEach(input => {
+                const feedback = input.closest('.form-group').querySelector('.input-feedback');
+                
+                if (!input.value.trim()) {
+                    feedback.textContent = 'This field is required';
+                    feedback.classList.add('error');
+                    feedback.classList.remove('success');
+                    input.style.borderColor = 'var(--error)';
+                    isValid = false;
+                } else {
+                    feedback.textContent = '✓';
+                    feedback.classList.remove('error');
+                    feedback.classList.add('success');
+                    input.style.borderColor = 'var(--success)';
+                }
+            });
+            
+            return isValid;
+        }
+        
+        // Form submission
+        const form = document.getElementById('jobEditForm');
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (validateStep(currentStep)) {
+                // Show loading state
+                const submitBtn = document.querySelector('.btn-submit');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = `
+                    <svg class="animate-spin" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                    </svg>
+                    Updating...
+                `;
+                submitBtn.disabled = true;
+                
+                // Submit the form
+                form.submit();
+            }
+        });
+        
+        // Toast functions
+        function showToast() {
+            const toast = document.getElementById('successToast');
+            toast.style.display = 'block';
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideInRight 0.3s ease reverse';
+                setTimeout(() => {
+                    toast.style.display = 'none';
+                    toast.style.animation = '';
+                }, 300);
+            }, 5000);
+        }
+        
+        function hideToast() {
+            const toast = document.getElementById('successToast');
+            toast.style.animation = 'slideInRight 0.3s ease reverse';
+            setTimeout(() => {
+                toast.style.display = 'none';
+                toast.style.animation = '';
+            }, 300);
+        }
+        
+        // Auto-save functionality
+        let saveTimeout;
+        const autoSave = () => {
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                console.log('Auto-saving...');
+                // Implement auto-save logic here
+            }, 2000);
+        };
+        
+        form.addEventListener('input', autoSave);
+        
+        // Preview job button
+        document.getElementById('previewJob')?.addEventListener('click', function() {
+            const previewData = {
+                title: document.getElementById('jobTitle').value,
+                location: document.getElementById('jobLocation').value,
+                salary: document.getElementById('jobSalary').value,
+                type: document.getElementById('jobType').value,
+                description: document.getElementById('jobDescription').value
+            };
+            
+            const previewWindow = window.open('', '_blank');
+            previewWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Job Preview: ${previewData.title}</title>
+                    <style>
+                        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; padding: 2rem; max-width: 800px; margin: 0 auto; }
+                        .job-preview { background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 1px solid #e0e0e0; }
+                        .job-header { border-bottom: 2px solid #e0e0e0; padding-bottom: 1rem; margin-bottom: 2rem; }
+                        .job-title { font-size: 2rem; font-weight: 800; color: #212121; margin: 0 0 0.5rem 0; }
+                        .job-meta { display: flex; gap: 1rem; color: #757575; font-size: 0.875rem; }
+                        .job-description { line-height: 1.6; color: #424242; white-space: pre-wrap; }
+                    </style>
+                </head>
+                <body>
+                    <div class="job-preview">
+                        <div class="job-header">
+                            <h1 class="job-title">${previewData.title}</h1>
+                            <div class="job-meta">
+                                <span>📍 ${previewData.location}</span>
+                                <span>💰 ${previewData.salary}</span>
+                                <span>⏰ ${previewData.type}</span>
+                            </div>
+                        </div>
+                        <div class="job-description">
+                            ${previewData.description}
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `);
+            previewWindow.document.close();
+        });
+        
+        // Save draft button
+        document.getElementById('saveDraft')?.addEventListener('click', function() {
+            if (confirm('Save current progress as draft?')) {
+                console.log('Saving draft...');
+                // Implement save draft logic here
+            }
+        });
+        
+        // Initialize form with current values
+        updateReview('title', document.getElementById('jobTitle').value);
+        updateReview('location', document.getElementById('jobLocation').value);
+        updateReview('salary', document.getElementById('jobSalary').value);
+        updateReview('type', document.getElementById('jobType').options[document.getElementById('jobType').selectedIndex].text);
+        updateReview('description', document.getElementById('jobDescription').value);
+        
+        // Responsive adjustments
+        function handleResponsive() {
+            const header = document.querySelector('.edit-job-header');
+            const main = document.querySelector('.edit-job-main');
+            
+            if (window.innerWidth < 768) {
+                if (header) header.style.padding = 'var(--space-4) var(--space-4) var(--space-6)';
+                if (main) main.style.padding = 'var(--space-4)';
+            } else {
+                if (header) header.style.padding = 'var(--space-8) var(--space-8) var(--space-12)';
+                if (main) main.style.padding = 'var(--space-8)';
+            }
+        }
+        
+        window.addEventListener('resize', handleResponsive);
+        handleResponsive();
+    });
+</script>
+
+{% endblock %}

@@ -8,5 +8,4 @@ urlpatterns = [
     path('delete/<int:job_id>/', delete_job, name='delete_job'),
     path('my_jobs/', my_jobs, name='my_jobs'),
     path('toggle/<int:job_id>/', toggle_job_status, name='toggle_job_status'),
-
 ]

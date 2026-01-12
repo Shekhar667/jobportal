@@ -1,5 +1,170 @@
-{% load static %}
-<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% extends "base.html" %}
+{% block content %}
+<style>
+/* Simple White Theme Styles */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px 20px;
+    background: #ffffff;
+}
+
+h2 {
+    font-size: 28px;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.card {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 30px;
+    border: 1px solid #e5e7eb;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.card:hover {
+    border-color: #2563eb;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+    transform: translateY(-2px);
+}
+
+.card h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 20px;
+}
+
+.card a {
+    display: inline-block;
+    padding: 10px 24px;
+    background: #2563eb;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+.card a:hover {
+    background: #1d4ed8;
+}
+
+/* Responsive Design */
+/* Tablet */
+@media (max-width: 992px) {
+    .container {
+        padding: 25px 20px;
+    }
+    
+    h2 {
+        font-size: 26px;
+        margin-bottom: 25px;
+    }
+    
+    .row {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+    
+    .card {
+        padding: 25px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px 15px;
+    }
+    
+    h2 {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+    
+    .row {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .card {
+        padding: 20px;
+    }
+    
+    .card h3 {
+        font-size: 18px;
+        margin-bottom: 15px;
+    }
+    
+    .card a {
+        padding: 9px 20px;
+        font-size: 14px;
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+    .container {
+        padding: 15px 12px;
+    }
+    
+    h2 {
+        font-size: 22px;
+        margin-bottom: 15px;
+    }
+    
+    .card {
+        padding: 18px;
+    }
+    
+    .card h3 {
+        font-size: 17px;
+    }
+    
+    .card a {
+        padding: 8px 18px;
+        font-size: 13px;
+    }
+}
+
+/* Extra Small Mobile */
+@media (max-width: 360px) {
+    .container {
+        padding: 12px 10px;
+    }
+    
+    h2 {
+        font-size: 20px;
+    }
+    
+    .card {
+        padding: 15px;
+    }
+    
+    .card h3 {
+        font-size: 16px;
+        margin-bottom: 12px;
+    }
+    
+    .card a {
+        padding: 7px 16px;
+        font-size: 12px;
+    }
+}
+</style>
 
 <div class="container">
     <h2>Job Seeker Dashboard</h2>
@@ -24,3 +189,5 @@
         </div>
     </div>
 </div>
+
+{% endblock %}

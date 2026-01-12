@@ -1,5 +1,7 @@
-{% load static %}
-<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+
+{% extends "base.html" %}
+
+{% block content %}
 
 <div class="container">
     <h2>Employer Dashboard</h2>
@@ -24,3 +26,4 @@
         </div>
     </div>
 </div>
+{% endblock %}

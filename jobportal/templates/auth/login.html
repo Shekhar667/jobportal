@@ -1,46 +1,461 @@
-{% extends 'base.html' %}
 {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - JobPortal</title>
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+    <style>
+        /* Mobile-first responsive enhancements */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-{% block content %}
-<link rel="stylesheet" href="{% static 'css/auth.css' %}">
-<div class="auth-container">
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            line-height: 1.5;
+        }
 
-    <div class="auth-card">
-        <div class="auth-title">JobPortal</div>
-        <div class="auth-subtitle">
-            Login to your account
-        </div>
+        /* Main container with responsive width */
+        .auth-container {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            animation: fadeIn 0.5s ease-out;
+        }
 
-        {% if error %}
-            <p style="color:red;font-size:13px;">{{ error }}</p>
-        {% endif %}
+        /* Card with responsive padding */
+        .auth-card {
+            background: #fff;
+            padding: clamp(24px, 5vw, 32px);
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
 
-        <form method="post">
-            {% csrf_token %}
-            <input name="email" placeholder="Email address" required>
-            <!-- <input type="password" name="password" placeholder="Password" required> -->
-            <div style="position:relative">
-                <input type="password" name="password" id="password" placeholder="Password">
-                <span onclick="togglePassword()" 
-                        style="position:absolute; right:10px; top:10px; cursor:pointer;">
+        /* Responsive typography - RESTORED TO ORIGINAL BLUE */
+        .auth-title {
+            font-size: clamp(28px, 5vw, 32px);
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 8px;
+            color: #2563eb; /* Restored original blue */
+            line-height: 1.2;
+        }
+
+        .auth-subtitle {
+            font-size: clamp(14px, 3vw, 15px);
+            color: #6b7280;
+            text-align: center;
+            margin-bottom: 24px;
+            line-height: 1.4;
+        }
+
+        /* Form inputs with responsive sizing */
+        .auth-card input,
+        .auth-card select {
+            width: 100%;
+            padding: clamp(12px, 3vw, 14px) clamp(12px, 3vw, 16px);
+            margin-bottom: 16px;
+            border-radius: 10px;
+            border: 2px solid #e5e7eb;
+            font-size: clamp(14px, 3vw, 15px);
+            transition: all 0.3s ease;
+            background: #f9fafb;
+        }
+
+        .auth-card input:focus,
+        .auth-card select:focus {
+            border-color: #2563eb; /* Restored original blue */
+            outline: none;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); /* Restored original blue with opacity */
+        }
+
+        /* Password input container */
+        .password-container {
+            position: relative;
+            width: 100%;
+            margin-bottom: 16px;
+        }
+
+        .password-container input {
+            width: 100%;
+            padding-right: 50px; /* Space for eye icon */
+            margin-bottom: 0;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 8px;
+            color: #6b7280;
+            transition: color 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .toggle-password:hover {
+            color: #2563eb; /* Restored original blue */
+        }
+
+        /* Responsive button - RESTORED TO ORIGINAL BLUE */
+        .auth-btn {
+            width: 100%;
+            padding: clamp(14px, 3vw, 16px);
+            background: #2563eb; /* Restored original blue */
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: clamp(15px, 3vw, 16px);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 8px;
+        }
+
+        .auth-btn:hover {
+            background: #1d4ed8; /* Darker shade of original blue for hover */
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.2); /* Restored original blue with opacity */
+        }
+
+        .auth-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Error message styling */
+        .error-message {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: clamp(13px, 3vw, 14px);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Footer with responsive text - RESTORED TO ORIGINAL BLUE */
+        .auth-footer {
+            text-align: center;
+            margin-top: 24px;
+            font-size: clamp(14px, 3vw, 15px);
+            color: #6b7280;
+            padding: 0 10px;
+        }
+
+        .auth-footer a {
+            color: #2563eb; /* Restored original blue */
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .auth-footer a:hover {
+            color: #1d4ed8; /* Darker shade of original blue */
+            text-decoration: underline;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .shake {
+            animation: shake 0.5s ease;
+        }
+
+        /* Extra small devices (phones, less than 400px) */
+        @media (max-width: 400px) {
+            body {
+                padding: 15px;
+            }
+            
+            .auth-card {
+                padding: 20px;
+                border-radius: 12px;
+            }
+            
+            .auth-title {
+                font-size: 26px;
+            }
+            
+            .auth-subtitle {
+                font-size: 13px;
+            }
+        }
+
+        /* Small tablets and landscape phones */
+        @media (min-width: 600px) and (max-width: 768px) {
+            .auth-container {
+                max-width: 450px;
+            }
+            
+            .auth-card {
+                padding: 40px;
+            }
+        }
+
+        /* Large tablets and small laptops */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .auth-container {
+                max-width: 450px;
+            }
+        }
+
+        /* Touch device optimizations */
+        @media (hover: none) and (pointer: coarse) {
+            .auth-btn:hover {
+                transform: none;
+                box-shadow: none;
+            }
+            
+            .toggle-password {
+                min-height: 44px; /* Better touch target */
+                min-width: 44px;
+            }
+            
+            .auth-card input {
+                font-size: 16px; /* Prevents iOS zoom */
+            }
+        }
+
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+            }
+            
+            .auth-card {
+                background: #1f2937;
+                border-color: #374151;
+            }
+            
+            .auth-title {
+                color: #2563eb; /* Restored original blue in dark mode */
+            }
+            
+            .auth-subtitle {
+                color: #9ca3af;
+            }
+            
+            .auth-card input,
+            .auth-card select {
+                background: #374151;
+                border-color: #4b5563;
+                color: #f3f4f6;
+            }
+            
+            .auth-card input:focus,
+            .auth-card select:focus {
+                background: #374151;
+                border-color: #2563eb; /* Restored original blue in dark mode */
+            }
+            
+            .toggle-password {
+                color: #9ca3af;
+            }
+            
+            .auth-btn {
+                background: #2563eb; /* Restored original blue in dark mode */
+                color: #ffffff; /* White text on blue button */
+            }
+            
+            .auth-btn:hover {
+                background: #1d4ed8; /* Darker shade of original blue for hover */
+            }
+            
+            .auth-footer a {
+                color: #2563eb; /* Restored original blue in dark mode */
+            }
+            
+            .auth-footer a:hover {
+                color: #1d4ed8; /* Darker shade of original blue for hover */
+            }
+            
+            .error-message {
+                background: #7f1d1d;
+                border-color: #991b1b;
+                color: #fecaca;
+            }
+        }
+
+        /* High contrast mode */
+        @media (prefers-contrast: high) {
+            .auth-card {
+                border: 2px solid #2563eb;
+            }
+            
+            .auth-card input {
+                border: 2px solid #2563eb;
+            }
+            
+            .auth-btn {
+                border: 2px solid #2563eb;
+            }
+        }
+
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-title">JobPortal</div>
+            <div class="auth-subtitle">
+                Login to your account
+            </div>
+
+            {% if error %}
+                <div class="error-message" id="errorMessage">
+                    {{ error }}
+                </div>
+            {% endif %}
+
+            <form method="post" id="loginForm">
+                {% csrf_token %}
+                <input type="email" name="email" placeholder="Email address" required
+                       autocapitalize="off" autocorrect="off" inputmode="email">
+                
+                <div class="password-container">
+                    <input type="password" name="password" id="password" placeholder="Password" required
+                           minlength="5" autocomplete="current-password">
+                    <button type="button" class="toggle-password" id="togglePassword"
+                            aria-label="Show password">
                         👁
-                </span>
+                    </button>
                 </div>
 
-                <script>
-                function togglePassword() {
-                let p = document.getElementById("password");
-                p.type = p.type === "password" ? "text" : "password";
+                <button type="submit" class="auth-btn">Log in</button>
+            </form>
+        </div>
+
+        <div class="auth-footer">
+            Don't have an account? <a href="/accounts/signup/">Sign up</a>
+        </div>
+    </div>
+
+    <script>
+        // Password toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const togglePassword = document.getElementById('togglePassword');
+            const passwordInput = document.getElementById('password');
+            const loginForm = document.getElementById('loginForm');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            // Toggle password visibility
+            if (togglePassword) {
+                togglePassword.addEventListener('click', function() {
+                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordInput.setAttribute('type', type);
+                    this.setAttribute('aria-label', type === 'password' ? 'Show password' : 'Hide password');
+                });
+                
+                // Better touch handling for mobile
+                togglePassword.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordInput.setAttribute('type', type);
+                    this.setAttribute('aria-label', type === 'password' ? 'Show password' : 'Hide password');
+                });
+            }
+            
+            // Form submission enhancement
+            if (loginForm) {
+                loginForm.addEventListener('submit', function(e) {
+                    const emailInput = this.querySelector('input[name="email"]');
+                    const passwordInput = this.querySelector('input[name="password"]');
+                    
+                    // Basic validation
+                    if (!emailInput.value.trim()) {
+                        e.preventDefault();
+                        emailInput.focus();
+                        if (errorMessage) {
+                            errorMessage.textContent = 'Please enter your email address';
+                        }
+                        return;
+                    }
+                    
+                    if (!passwordInput.value.trim()) {
+                        e.preventDefault();
+                        passwordInput.focus();
+                        if (errorMessage) {
+                            errorMessage.textContent = 'Please enter your password';
+                        }
+                        return;
+                    }
+                });
+            }
+            
+            // Auto-focus on first input
+            const firstInput = document.querySelector('input[type="email"]');
+            if (firstInput && !errorMessage) {
+                setTimeout(() => {
+                    firstInput.focus();
+                }, 300);
+            }
+            
+            // Add shake animation to error message if present
+            if (errorMessage) {
+                errorMessage.classList.add('shake');
+            }
+            
+            // Handle Enter key submission
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.target.matches('button')) {
+                    const activeElement = document.activeElement;
+                    if (activeElement && activeElement.tagName === 'INPUT') {
+                        // Let the form handle Enter key normally
+                    }
                 }
-                </script>
-
-            <button class="auth-btn">Log in</button>
-        </form>
-    </div>
-
-    <div class="auth-footer">
-        Don't have an account? <a href="/accounts/signup/">Sign up</a>
-    </div>
-</div>
-
-{% endblock %}
+            });
+            
+            // Viewport height fix for mobile browsers
+            function setViewportHeight() {
+                const vh = window.innerHeight * 0.01;
+                document.documentElement.style.setProperty('--vh', `${vh}px`);
+            }
+            
+            window.addEventListener('resize', setViewportHeight);
+            window.addEventListener('orientationchange', setViewportHeight);
+            setViewportHeight();
+        });
+    </script>
+</body>
+</html>

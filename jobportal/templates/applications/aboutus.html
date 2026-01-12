@@ -1,0 +1,746 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+    /* About Us Page Specific Styles - Simple White Theme */
+    .about-hero {
+        background-color: #f8f9fa;
+        color: #333;
+        padding: 60px 20px;
+        text-align: center;
+        position: relative;
+    }
+    
+    .hero-content {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .about-hero h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: #333;
+    }
+    
+    .about-hero p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 30px;
+        color: #666;
+    }
+    
+    .stats-container {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin-top: 40px;
+    }
+    
+    .stat-item {
+        text-align: center;
+        padding: 20px;
+        min-width: 140px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        display: block;
+        margin-bottom: 5px;
+        color: #333;
+    }
+    
+    .stat-label {
+        font-size: 0.9rem;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    /* Mission & Vision Section */
+    .mission-section {
+        padding: 60px 20px;
+        background-color: white;
+    }
+    
+    .section-title {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+    
+    .section-title h2 {
+        font-size: 2rem;
+        color: #333;
+        margin-bottom: 10px;
+    }
+    
+    .section-title p {
+        color: #666;
+        font-size: 1rem;
+        max-width: 700px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+    
+    .mission-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .mission-card {
+        background: white;
+        border-radius: 8px;
+        padding: 30px 20px;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        border: 1px solid #eaeaea;
+    }
+    
+    .mission-icon {
+        width: 60px;
+        height: 60px;
+        background: #f8f9fa;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        color: #333;
+        font-size: 1.5rem;
+    }
+    
+    .mission-card h3 {
+        font-size: 1.3rem;
+        color: #333;
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+    
+    .mission-card p {
+        color: #666;
+        line-height: 1.6;
+        font-size: 1rem;
+    }
+    
+    /* Our Story Section */
+    .story-section {
+        padding: 60px 20px;
+        background-color: #f8f9fa;
+    }
+    
+    .story-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        align-items: center;
+    }
+    
+    .story-text h2 {
+        font-size: 2rem;
+        color: #333;
+        margin-bottom: 20px;
+        line-height: 1.2;
+        font-weight: 700;
+    }
+    
+    .story-text p {
+        color: #666;
+        line-height: 1.6;
+        margin-bottom: 15px;
+        font-size: 1rem;
+    }
+    
+    .story-image {
+        position: relative;
+    }
+    
+    .story-image img {
+        width: 100%;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .image-overlay {
+        position: absolute;
+        bottom: -10px;
+        right: -10px;
+        background: white;
+        color: #333;
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        z-index: 2;
+    }
+    
+    .image-overlay h4 {
+        font-size: 1.1rem;
+        margin-bottom: 5px;
+        font-weight: 600;
+    }
+    
+    .image-overlay p {
+        font-size: 0.9rem;
+        color: #666;
+        margin: 0;
+    }
+    
+    /* Values Section */
+    .values-section {
+        padding: 60px 20px;
+        background-color: white;
+    }
+    
+    .values-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .value-card {
+        background: white;
+        padding: 25px 20px;
+        border-radius: 8px;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        border: 1px solid #eaeaea;
+    }
+    
+    .value-icon {
+        font-size: 2rem;
+        color: #333;
+        margin-bottom: 15px;
+    }
+    
+    .value-card h3 {
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+    
+    .value-card p {
+        color: #666;
+        line-height: 1.6;
+        font-size: 0.95rem;
+    }
+    
+    /* Team Section */
+    .team-section {
+        padding: 60px 20px;
+        background-color: #f8f9fa;
+    }
+    
+    .team-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .team-card {
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        border: 1px solid #eaeaea;
+    }
+    
+    .team-img {
+        height: 200px;
+        background: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #333;
+        font-size: 2rem;
+        font-weight: 600;
+    }
+    
+    .team-info {
+        padding: 20px;
+        text-align: center;
+    }
+    
+    .team-info h3 {
+        color: #333;
+        margin-bottom: 5px;
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+    
+    .team-info p {
+        color: #666;
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+    }
+    
+    .team-social {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+    }
+    
+    .team-social a {
+        color: #666;
+        font-size: 1rem;
+    }
+    
+    .team-social a:hover {
+        color: #333;
+    }
+    
+    /* CTA Section */
+    .cta-section {
+        padding: 40px 20px;
+        background-color: white;
+        text-align: center;
+        margin: 0 20px 40px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        border: 1px solid #eaeaea;
+    }
+    
+    .cta-section h2 {
+        font-size: 1.8rem;
+        color: #333;
+        margin-bottom: 15px;
+        font-weight: 700;
+    }
+    
+    .cta-section p {
+        color: #666;
+        font-size: 1rem;
+        max-width: 700px;
+        margin: 0 auto 25px;
+        line-height: 1.6;
+    }
+    
+    .cta-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .btn {
+        padding: 12px 30px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: none;
+        cursor: pointer;
+    }
+    
+    .btn-primary {
+        background: #2563eb;
+        color: white;
+    }
+    
+    .btn-primary:hover {
+        background: #1d4ed8;
+        transform: translateY(-2px);
+    }
+    
+    .btn-secondary {
+        background: #f8f9fa;
+        color: #333;
+        border: 1px solid #ddd;
+    }
+    
+    .btn-secondary:hover {
+        background: #e9ecef;
+        transform: translateY(-2px);
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 992px) {
+        .about-hero h1 {
+            font-size: 2rem;
+        }
+        
+        .story-content {
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+        
+        .story-image {
+            order: -1;
+        }
+        
+        .image-overlay {
+            bottom: -5px;
+            right: -5px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .about-hero {
+            padding: 40px 20px;
+        }
+        
+        .about-hero h1 {
+            font-size: 1.8rem;
+        }
+        
+        .about-hero p {
+            font-size: 1rem;
+        }
+        
+        .stat-item {
+            min-width: 120px;
+            padding: 15px;
+        }
+        
+        .stat-number {
+            font-size: 1.5rem;
+        }
+        
+        .mission-section,
+        .story-section,
+        .values-section,
+        .team-section {
+            padding: 40px 20px;
+        }
+        
+        .section-title h2 {
+            font-size: 1.8rem;
+        }
+        
+        .mission-cards {
+            grid-template-columns: 1fr;
+        }
+        
+        .cta-section {
+            margin: 0 10px 30px;
+            padding: 30px 20px;
+        }
+        
+        .cta-section h2 {
+            font-size: 1.5rem;
+        }
+        
+        .cta-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .btn {
+            width: 100%;
+            max-width: 250px;
+            justify-content: center;
+            padding: 10px 20px;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .stats-container {
+            gap: 15px;
+        }
+        
+        .stat-item {
+            min-width: 100px;
+            padding: 12px;
+        }
+        
+        .image-overlay {
+            position: relative;
+            bottom: 0;
+            right: 0;
+            margin-top: 15px;
+        }
+        
+        .values-grid,
+        .team-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    @media (max-width: 400px) {
+        .about-hero h1 {
+            font-size: 1.5rem;
+        }
+        
+        .stat-item {
+            min-width: 80px;
+        }
+        
+        .stat-number {
+            font-size: 1.3rem;
+        }
+    }
+</style>
+
+<!-- Hero Section -->
+<section class="about-hero">
+    <div class="hero-content">
+        <h1>Transforming Careers, Empowering Dreams</h1>
+        <p>Welcome to JobPortal, where we connect exceptional talent with life-changing opportunities. Our mission is to revolutionize the job search experience through innovation, empathy, and cutting-edge technology.</p>
+        
+        <div class="stats-container">
+            <div class="stat-item">
+                <span class="stat-number" id="jobsCount">0</span>
+                <span class="stat-label">Jobs Posted</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" id="companiesCount">0</span>
+                <span class="stat-label">Companies</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" id="candidatesCount">0</span>
+                <span class="stat-label">Candidates Hired</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" id="successRate">0%</span>
+                <span class="stat-label">Success Rate</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Mission & Vision Section -->
+<section class="mission-section">
+    <div class="section-title">
+        <h2>Our Mission & Vision</h2>
+        <p>We're on a mission to bridge the gap between talent and opportunity, creating meaningful connections that last.</p>
+    </div>
+    
+    <div class="mission-cards">
+        <div class="mission-card">
+            <div class="mission-icon">
+                <i class="fas fa-bullseye"></i>
+            </div>
+            <h3>Our Mission</h3>
+            <p>To empower individuals in their career journeys by providing accessible, efficient, and intelligent job matching solutions that connect the right talent with the right opportunities.</p>
+        </div>
+        
+        <div class="mission-card">
+            <div class="mission-icon">
+                <i class="fas fa-eye"></i>
+            </div>
+            <h3>Our Vision</h3>
+            <p>To become the world's most trusted career platform, where every job seeker finds their dream role and every employer discovers exceptional talent.</p>
+        </div>
+        
+        <div class="mission-card">
+            <div class="mission-icon">
+                <i class="fas fa-handshake"></i>
+            </div>
+            <h3>Our Promise</h3>
+            <p>We commit to maintaining the highest standards of integrity, innovation, and user satisfaction in everything we do.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Our Story Section -->
+<section class="story-section">
+    <div class="story-content">
+        <div class="story-text">
+            <h2>Our Journey: From Idea to Impact</h2>
+            <p>Founded in 2020 by a team of HR professionals and tech enthusiasts, JobPortal began as a simple idea: to make job searching less stressful and more productive. We witnessed firsthand the challenges both job seekers and employers faced in the traditional recruitment process.</p>
+            <p>Driven by our passion for innovation and human potential, we built a platform that leverages artificial intelligence and machine learning to create smarter matches between candidates and companies.</p>
+            <p>Today, we've grown into a trusted platform serving thousands of users worldwide, but our core values remain unchanged: empathy, innovation, and commitment to our community.</p>
+        </div>
+        <div class="story-image">
+            <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Our Team Collaboration">
+            <div class="image-overlay">
+                <h4>2020</h4>
+                <p>Year We Started</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Our Values Section -->
+<section class="values-section">
+    <div class="section-title">
+        <h2>Our Core Values</h2>
+        <p>The principles that guide every decision we make and every feature we build.</p>
+    </div>
+    
+    <div class="values-grid">
+        <div class="value-card">
+            <div class="value-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <h3>Community First</h3>
+            <p>We believe in building a supportive ecosystem where everyone grows together.</p>
+        </div>
+        
+        <div class="value-card">
+            <div class="value-icon">
+                <i class="fas fa-lightbulb"></i>
+            </div>
+            <h3>Innovation</h3>
+            <p>Continuously evolving our platform with cutting-edge technology to serve you better.</p>
+        </div>
+        
+        <div class="value-card">
+            <div class="value-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h3>Trust & Security</h3>
+            <p>Your data privacy and security are our top priorities.</p>
+        </div>
+        
+        <div class="value-card">
+            <div class="value-icon">
+                <i class="fas fa-heart"></i>
+            </div>
+            <h3>Empathy</h3>
+            <p>Understanding the human stories behind every job search and hire.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Team Section -->
+<section class="team-section">
+    <div class="section-title">
+        <h2>Meet Our Leadership</h2>
+        <p>The passionate individuals driving our mission forward.</p>
+    </div>
+    
+    <div class="team-grid">
+        <div class="team-card">
+            <div class="team-img">JS</div>
+            <div class="team-info">
+                <h3>John Smith</h3>
+                <p>CEO & Founder</p>
+                <div class="team-social">
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="team-card">
+            <div class="team-img">SR</div>
+            <div class="team-info">
+                <h3>Sarah Rodriguez</h3>
+                <p>Chief Technology Officer</p>
+                <div class="team-social">
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="team-card">
+            <div class="team-img">MW</div>
+            <div class="team-info">
+                <h3>Michael Wang</h3>
+                <p>Head of Product</p>
+                <div class="team-social">
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="team-card">
+            <div class="team-img">EJ</div>
+            <div class="team-info">
+                <h3>Emily Johnson</h3>
+                <p>Director of Partnerships</p>
+                <div class="team-social">
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="cta-content">
+        <h2>Ready to Transform Your Career?</h2>
+        <p>Join thousands of successful professionals who found their dream jobs through JobPortal. Whether you're looking for your next opportunity or seeking exceptional talent, we're here to help.</p>
+        
+        <div class="cta-buttons">
+            <a href="/jobs/list/" class="btn btn-primary">
+                <i class="fas fa-search"></i>
+                Find Your Dream Job
+            </a>
+            <a href="/accounts/signup/" class="btn btn-secondary">
+                <i class="fas fa-user-plus"></i>
+                Join Our Community
+            </a>
+        </div>
+    </div>
+</section>
+
+<script>
+    // Animated counter for statistics
+    document.addEventListener('DOMContentLoaded', function() {
+        const counters = [
+            { element: 'jobsCount', target: 25000, duration: 2000 },
+            { element: 'companiesCount', target: 1200, duration: 2000 },
+            { element: 'candidatesCount', target: 15000, duration: 2000 },
+            { element: 'successRate', target: 95, duration: 2000, suffix: '%' }
+        ];
+        
+        counters.forEach(counter => {
+            const element = document.getElementById(counter.element);
+            const target = counter.target;
+            const duration = counter.duration;
+            const suffix = counter.suffix || '';
+            
+            let startTime = null;
+            let current = 0;
+            
+            function animateCounter(timestamp) {
+                if (!startTime) startTime = timestamp;
+                const progress = timestamp - startTime;
+                const percentage = Math.min(progress / duration, 1);
+                
+                // Easing function for smooth animation
+                const easeOutQuart = 1 - Math.pow(1 - percentage, 4);
+                
+                current = Math.floor(easeOutQuart * target);
+                
+                if (counter.element === 'successRate') {
+                    element.textContent = current + suffix;
+                } else {
+                    // Add commas to large numbers
+                    element.textContent = current.toLocaleString() + suffix;
+                }
+                
+                if (percentage < 1) {
+                    requestAnimationFrame(animateCounter);
+                }
+            }
+            
+            // Start animation when element is in viewport
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        requestAnimationFrame(animateCounter);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            observer.observe(element);
+        });
+    });
+</script>
+
+{% endblock %}

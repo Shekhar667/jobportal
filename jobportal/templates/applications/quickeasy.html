@@ -1,0 +1,864 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    /* Dashboard Container - Light Airy Theme */
+    .dashboard-container {
+        max-width: 1271px;
+        margin: 0 auto;
+        padding: 0px;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        min-height: 100vh;
+    }
+
+    /* Dashboard Header - Soft Gradient */
+    .dashboard-header {
+        text-align: center;
+        margin-bottom: 50px;
+        padding: 50px 0;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
+        border-radius: 24px;
+        color: #334155;
+        box-shadow: 0 4px 20px rgba(148, 163, 184, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(226, 232, 240, 0.5);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .dashboard-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #7dd3fc 0%, #93c5fd 50%, #a5b4fc 100%);
+    }
+
+    .welcome-title {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+        letter-spacing: -0.5px;
+        background: linear-gradient(135deg, #475569 0%, #64748b 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .welcome-subtitle {
+        font-size: 1.2rem;
+        color: #64748b;
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.6;
+        font-weight: 400;
+    }
+
+    .user-avatar-large {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        font-weight: 600;
+        margin: 0 auto 25px;
+        border: 3px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 0 8px 16px rgba(148, 163, 184, 0.1);
+        color: #0ea5e9;
+    }
+
+    /* Dashboard Grid */
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 30px;
+        margin-bottom: 50px;
+    }
+
+    /* Cards - Glass Morphism */
+    .dashboard-card {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 20px;
+        padding: 35px;
+        box-shadow: 0 4px 20px rgba(148, 163, 184, 0.08);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid rgba(226, 232, 240, 0.6);
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 30px rgba(148, 163, 184, 0.15);
+        border-color: rgba(203, 213, 225, 0.8);
+    }
+
+    .card-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 35px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #f1f5f9;
+    }
+
+    .card-icon {
+        width: 56px;
+        height: 56px;
+        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 20px;
+        color: #0ea5e9;
+        font-size: 1.6rem;
+        border: 1px solid rgba(14, 165, 233, 0.1);
+    }
+
+    .card-title {
+        font-size: 1.6rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin: 0;
+    }
+
+    .card-subtitle {
+        color: #64748b;
+        font-size: 0.95rem;
+        margin-top: 8px;
+        font-weight: 400;
+    }
+
+    /* Profile Info - Clean Design */
+    .profile-info {
+        margin-bottom: 30px;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+        padding: 16px;
+        border-radius: 12px;
+        background: #f8fafc;
+        transition: all 0.3s ease;
+        border: 1px solid transparent;
+    }
+
+    .info-item:hover {
+        background: white;
+        border-color: #e2e8f0;
+        transform: translateX(4px);
+    }
+
+    .info-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .info-icon {
+        width: 40px;
+        height: 40px;
+        background: white;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+        color: #0ea5e9;
+        font-size: 1.1rem;
+        border: 1px solid #e2e8f0;
+    }
+
+    .info-content {
+        flex: 1;
+    }
+
+    .info-label {
+        font-size: 0.85rem;
+        color: #64748b;
+        margin-bottom: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 500;
+    }
+
+    .info-value {
+        font-size: 1.05rem;
+        color: #1e293b;
+        font-weight: 500;
+    }
+
+    /* Application Stats */
+    .app-stats {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .stat-box {
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        border-radius: 16px;
+        padding: 25px;
+        text-align: center;
+        transition: all 0.3s ease;
+        border: 1px solid #e2e8f0;
+    }
+
+    .stat-box:hover {
+        background: white;
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(148, 163, 184, 0.12);
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #0ea5e9;
+        line-height: 1;
+        margin-bottom: 8px;
+    }
+
+    .stat-label {
+        font-size: 0.95rem;
+        color: #64748b;
+        font-weight: 500;
+    }
+
+    /* Recent Applications */
+    .recent-apps {
+        margin-top: 35px;
+    }
+
+    .recent-apps-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .app-item {
+        display: flex;
+        align-items: center;
+        padding: 18px;
+        background: #f8fafc;
+        border-radius: 14px;
+        margin-bottom: 12px;
+        transition: all 0.3s ease;
+        border: 1px solid transparent;
+    }
+
+    .app-item:hover {
+        background: white;
+        border-color: #e2e8f0;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(148, 163, 184, 0.1);
+    }
+
+    .app-company-logo {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 20px;
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #0ea5e9;
+        border: 1px solid rgba(14, 165, 233, 0.1);
+    }
+
+    .app-details {
+        flex: 1;
+    }
+
+    .app-position {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 4px;
+    }
+
+    .app-company {
+        color: #64748b;
+        font-size: 0.95rem;
+        margin-bottom: 8px;
+    }
+
+    .app-meta {
+        display: flex;
+        gap: 15px;
+        font-size: 0.85rem;
+        color: #94a3b8;
+    }
+
+    .app-meta i {
+        margin-right: 4px;
+    }
+
+    .app-status {
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        letter-spacing: 0.3px;
+    }
+
+    .status-pending {
+        background: #fef3c7;
+        color: #92400e;
+        border: 1px solid #fde68a;
+    }
+
+    .status-reviewed {
+        background: #dbeafe;
+        color: #1e40af;
+        border: 1px solid #bfdbfe;
+    }
+
+    .status-accepted {
+        background: #d1fae5;
+        color: #065f46;
+        border: 1px solid #a7f3d0;
+    }
+
+    /* Action Buttons - Soft Design */
+    .action-buttons {
+        display: flex;
+        gap: 15px;
+        margin-top: 40px;
+        flex-wrap: wrap;
+    }
+
+    .action-btn {
+        padding: 9px 28px;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 16px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid transparent;
+    }
+
+    .action-btn-primary {
+        background: linear-gradient(135deg, #0ea5e9 0%, #38bdf8 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(14, 165, 233, 0.2);
+    }
+
+    .action-btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(14, 165, 233, 0.3);
+    }
+
+    .action-btn-secondary {
+        background: white;
+        color: #0ea5e9;
+        border: 1px solid #e2e8f0;
+    }
+
+    .action-btn-secondary:hover {
+        background: #f8fafc;
+        border-color: #0ea5e9;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(148, 163, 184, 0.1);
+    }
+
+    /* Quick Stats - Minimalist Cards */
+    .quick-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 25px;
+        margin-top: 50px;
+    }
+
+    .stat-card {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 18px;
+        padding: 30px;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(148, 163, 184, 0.08);
+        transition: all 0.3s ease;
+        border: 1px solid rgba(226, 232, 240, 0.6);
+        backdrop-filter: blur(10px);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 30px rgba(148, 163, 184, 0.15);
+        border-color: rgba(203, 213, 225, 0.8);
+    }
+
+    .stat-card-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        color: #0ea5e9;
+        font-size: 1.5rem;
+        border: 1px solid rgba(14, 165, 233, 0.1);
+    }
+
+    .stat-card-number {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 8px;
+    }
+
+    .stat-card-label {
+        color: #64748b;
+        font-size: 0.95rem;
+        font-weight: 500;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 992px) {
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .welcome-title {
+            font-size: 2.5rem;
+        }
+        
+        .app-stats {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-container {
+            padding: 15px;
+        }
+        
+        .dashboard-header {
+            padding: 40px 20px;
+            border-radius: 20px;
+        }
+        
+        .welcome-title {
+            font-size: 2rem;
+        }
+        
+        .welcome-subtitle {
+            font-size: 1.1rem;
+        }
+        
+        .user-avatar-large {
+            width: 80px;
+            height: 80px;
+            font-size: 2rem;
+        }
+        
+        .dashboard-card {
+            padding: 25px;
+        }
+        
+        .card-title {
+            font-size: 1.4rem;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+        
+        .action-btn {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .app-item {
+            flex-direction: column;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .app-company-logo {
+            margin-right: 0;
+            margin-bottom: 15px;
+        }
+        
+        .app-meta {
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .quick-stats {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 480px) {
+        .welcome-title {
+            font-size: 1.8rem;
+        }
+        
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            font-size: 1.4rem;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+        }
+        
+        .app-position {
+            font-size: 1rem;
+        }
+        
+        .info-item {
+            flex-direction: column;
+            text-align: center;
+            align-items: center;
+        }
+        
+        .info-icon {
+            margin-right: 0;
+            margin-bottom: 10px;
+        }
+        
+        .quick-stats {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .dashboard-header,
+    .dashboard-card,
+    .stat-card {
+        animation: fadeIn 0.6s ease-out forwards;
+        opacity: 0;
+    }
+
+    .dashboard-header {
+        animation-delay: 0.1s;
+    }
+
+    .profile-card {
+        animation-delay: 0.2s;
+    }
+
+    .applications-card {
+        animation-delay: 0.3s;
+    }
+
+    .stat-card:nth-child(1) {
+        animation-delay: 0.4s;
+    }
+
+    .stat-card:nth-child(2) {
+        animation-delay: 0.5s;
+    }
+
+    .stat-card:nth-child(3) {
+        animation-delay: 0.6s;
+    }
+
+    .stat-card:nth-child(4) {
+        animation-delay: 0.7s;
+    }
+</style>
+
+<div class="dashboard-container">
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+        <div class="user-avatar-large">
+            {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+        </div>
+        <h1 class="welcome-title">Welcome back, {{ user.first_name }}!</h1>
+        <p class="welcome-subtitle">Your career journey at a glance. Track applications, manage your profile, and discover opportunities.</p>
+    </div>
+
+    <!-- Dashboard Grid -->
+    <div class="dashboard-grid">
+        <!-- My Profile Card -->
+        <div class="dashboard-card profile-card">
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <div>
+                    <h2 class="card-title">Profile Overview</h2>
+                    <p class="card-subtitle">Personal details & preferences</p>
+                </div>
+            </div>
+
+            <div class="profile-info">
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="info-content">
+                        <div class="info-label">Full Name</div>
+                        <div class="info-value">{{ user.first_name }} {{ user.last_name }}</div>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="info-content">
+                        <div class="info-label">Email Address</div>
+                        <div class="info-value">{{ user.email }}</div>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div class="info-content">
+                        <div class="info-label">Phone Number</div>
+                        <div class="info-value">+1 (555) 123-4567</div>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="info-content">
+                        <div class="info-label">Location</div>
+                        <div class="info-value">San Francisco, CA</div>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <div class="info-content">
+                        <div class="info-label">Current Position</div>
+                        <div class="info-value">Senior Software Engineer</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <a href="/accounts/profile/" class="action-btn action-btn-primary">
+                    <i class="fas fa-edit"></i>
+                    Edit Profile
+                </a>
+            </div>
+        </div>
+
+        <!-- Applied Jobs Card -->
+        <div class="dashboard-card applications-card">
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-clipboard-check"></i>
+                </div>
+                <div>
+                    <h2 class="card-title">Application Tracker</h2>
+                    <p class="card-subtitle">Monitor your job applications</p>
+                </div>
+            </div>
+
+            <div class="app-stats">
+                <div class="stat-box">
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">Total Applications</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">Interviews Scheduled</div>
+                </div>
+            </div>
+
+            <div class="recent-apps">
+                <h3 class="recent-apps-title">Recent Activity</h3>
+                
+                <div class="app-item">
+                    <div class="app-company-logo">T</div>
+                    <div class="app-details">
+                        <div class="app-position">Senior Frontend Developer</div>
+                        <div class="app-company">TechCorp Inc.</div>
+                        <div class="app-meta">
+                            <span><i class="far fa-calendar"></i> Applied: 2 days ago</span>
+                            <span class="app-status status-reviewed">Under Review</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="app-item">
+                    <div class="app-company-logo">I</div>
+                    <div class="app-details">
+                        <div class="app-position">Product Manager</div>
+                        <div class="app-company">Innovate Solutions</div>
+                        <div class="app-meta">
+                            <span><i class="far fa-calendar"></i> Applied: 5 days ago</span>
+                            <span class="app-status status-pending">Application Pending</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="app-item">
+                    <div class="app-company-logo">D</div>
+                    <div class="app-details">
+                        <div class="app-position">DevOps Engineer</div>
+                        <div class="app-company">Digital Systems</div>
+                        <div class="app-meta">
+                            <span><i class="far fa-calendar"></i> Applied: 1 week ago</span>
+                            <span class="app-status status-accepted">Interview Scheduled</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <a href="/applications/status/" class="action-btn action-btn-primary">
+                    <i class="fas fa-eye"></i>
+                    View All Applications
+                </a>
+                <a href="/jobs/list/" class="action-btn action-btn-secondary">
+                    <i class="fas fa-search"></i>
+                    Find More Jobs
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="quick-stats">
+        <div class="stat-card">
+            <div class="stat-card-icon">
+                <i class="fas fa-bell"></i>
+            </div>
+            <div class="stat-card-number">8</div>
+            <div class="stat-card-label">Job Alerts</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-card-icon">
+                <i class="fas fa-star"></i>
+            </div>
+            <div class="stat-card-number">24</div>
+            <div class="stat-card-label">Saved Jobs</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-card-icon">
+                <i class="fas fa-building"></i>
+            </div>
+            <div class="stat-card-number">156</div>
+            <div class="stat-card-label">Companies Viewed</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-card-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="stat-card-number">3</div>
+            <div class="stat-card-label">Upcoming Interviews</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Smooth hover effects
+        const cards = document.querySelectorAll('.dashboard-card, .stat-card');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.zIndex = '10';
+            });
+            card.addEventListener('mouseleave', function() {
+                this.style.zIndex = '1';
+            });
+        });
+
+        // Update application status with subtle animation
+        function updateApplicationStats() {
+            const totalApps = document.querySelector('.stat-box .stat-number');
+            if (totalApps) {
+                const currentCount = parseInt(totalApps.textContent);
+                if (currentCount < 15) {
+                    totalApps.style.transform = 'scale(1.2)';
+                    setTimeout(() => {
+                        totalApps.textContent = currentCount + 1;
+                        totalApps.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            }
+        }
+
+        // Interactive status badges
+        const statusBadges = document.querySelectorAll('.app-status');
+        statusBadges.forEach(badge => {
+            badge.addEventListener('click', function() {
+                const status = this.textContent;
+                const colors = {
+                    'Under Review': '#dbeafe',
+                    'Application Pending': '#fef3c7',
+                    'Interview Scheduled': '#d1fae5'
+                };
+                
+                this.style.backgroundColor = colors[status] || '#e2e8f0';
+                setTimeout(() => {
+                    this.style.backgroundColor = '';
+                }, 500);
+            });
+        });
+
+        // Add pulse animation to notification bell
+        const bellIcon = document.querySelector('.fa-bell');
+        if (bellIcon) {
+            setInterval(() => {
+                bellIcon.style.animation = 'pulse 2s infinite';
+                setTimeout(() => {
+                    bellIcon.style.animation = '';
+                }, 2000);
+            }, 10000);
+        }
+
+        // Add CSS for pulse animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.1); }
+                100% { transform: scale(1); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Smooth page load animation
+        document.body.style.opacity = '0';
+        document.body.style.transition = 'opacity 0.5s ease';
+        
+        setTimeout(() => {
+            document.body.style.opacity = '1';
+        }, 100);
+    });
+</script>
+{% endblock %}

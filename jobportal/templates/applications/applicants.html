@@ -1,2 +1,289 @@
-<h3>Applicants</h3>
-<p>Applicants list will appear here.</p>
+{% extends "base.html" %}
+{% block content %}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+/* ================= BASE ================= */
+body {
+    background: #f4f6fb;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+}
+
+.applicants-container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 30px 16px;
+}
+
+/* ================= HEADER ================= */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.page-title {
+    font-size: 26px;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.job-title {
+    color: #4361ee;
+}
+
+.total-count {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+/* ================= CARD ================= */
+.applicant-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 22px;
+    margin-bottom: 18px;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.06);
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    transition: all 0.2s ease;
+}
+
+.applicant-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 30px rgba(0,0,0,0.08);
+}
+
+/* ================= INFO ================= */
+.applicant-info h4 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 6px;
+}
+
+.applicant-info p {
+    margin: 4px 0;
+    font-size: 14px;
+    color: #4b5563;
+}
+
+.applicant-info strong {
+    color: #111827;
+}
+
+/* ================= STATUS ================= */
+.badge {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 20px;
+}
+
+.badge-applied {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.badge-reviewed {
+    background: #e0e7ff;
+    color: #3730a3;
+}
+
+.badge-accepted {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.badge-rejected {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+/* ================= ACTIONS ================= */
+.applicant-actions {
+    display: flex;
+    align-items: center;
+}
+
+.resume-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: #4361ee;
+    color: #fff;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background 0.2s ease;
+}
+
+.resume-link:hover {
+    background: #3a56d4;
+}
+
+.no-resume {
+    font-size: 14px;
+    color: #9ca3af;
+}
+
+/* ================= EMPTY ================= */
+.no-applicants {
+    background: #fff;
+    border-radius: 16px;
+    padding: 50px 20px;
+    text-align: center;
+    color: #6b7280;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+}
+
+.no-applicants i {
+    font-size: 42px;
+    color: #4361ee;
+    margin-bottom: 10px;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+    .applicant-card {
+        flex-direction: column;
+    }
+
+    .applicant-actions {
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-title {
+        font-size: 22px;
+    }
+
+    .resume-link {
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>
+
+<div class="applicants-container">
+
+    <!-- HEADER -->
+    <div class="page-header">
+        <div class="page-title">
+            Applicants for <span class="job-title">
+                {% if job_json %}
+                    {{ job_json.title }}
+                {% else %}
+                    {{ job.title }}
+                {% endif %}
+            </span>
+        </div>
+        <div class="total-count">
+            Total Applications: <strong>
+                {% if applications_json %}
+                    {{ applications_json|length }}
+                {% else %}
+                    {{ applications|length }}
+                {% endif %}
+            </strong>
+        </div>
+    </div>
+
+    <!-- APPLICANTS -->
+    {% if applications_json %}
+        <!-- JSON Data (API response se) -->
+        {% for app in applications_json %}
+            <div class="applicant-card">
+
+                <div class="applicant-info">
+                    <h4>{{ app.job_seeker.full_name }}</h4>
+
+                    <p><strong>Email:</strong> {{ app.job_seeker.email }}</p>
+                    <p><strong>Phone:</strong> {{ app.job_seeker.phone }}</p>
+                    <p><strong>Qualification:</strong> {{ app.qualification }}</p>
+                    <p><strong>Experience:</strong> {{ app.experience }} years</p>
+                    <p><strong>Skills:</strong> {{ app.skills }}</p>
+                    <p><strong>Address:</strong> {{ app.address }}</p>
+                    <p><strong>Applied on:</strong> {{ app.applied_at|date:"d M Y" }}</p>
+
+                    <span class="badge
+                        {% if app.status == 'APPLIED' %}badge-applied{% endif %}
+                        {% if app.status == 'REVIEWED' %}badge-reviewed{% endif %}
+                        {% if app.status == 'ACCEPTED' %}badge-accepted{% endif %}
+                        {% if app.status == 'REJECTED' %}badge-rejected{% endif %}
+                    ">
+                        {{ app.status }}
+                    </span>
+                </div>
+
+                <div class="applicant-actions">
+                    {% if app.resume_url %}
+                        <a href="{{ app.resume_url }}" target="_blank" class="resume-link">
+                            <i class="fas fa-file-pdf"></i> View Resume
+                        </a>
+                    {% else %}
+                        <span class="no-resume">No Resume</span>
+                    {% endif %}
+                </div>
+
+            </div>
+        {% endfor %}
+    
+    {% elif applications %}
+        <!-- Original Database Objects -->
+        {% for app in applications %}
+            <div class="applicant-card">
+
+                <div class="applicant-info">
+                    <h4>{{ app.job_seeker.first_name }} {{ app.job_seeker.last_name }}</h4>
+
+                    <p><strong>Email:</strong> {{ app.job_seeker.email }}</p>
+                    <p><strong>Phone:</strong> {{ app.job_seeker.phone }}</p>
+                    <p><strong>Qualification:</strong> {{ app.qualification }}</p>
+                    <p><strong>Experience:</strong> {{ app.experience }} years</p>
+                    <p><strong>Skills:</strong> {{ app.skills }}</p>
+                    <p><strong>Address:</strong> {{ app.address }}</p>
+                    <p><strong>Applied on:</strong> {{ app.applied_at|date:"d M Y" }}</p>
+
+                    <span class="badge
+                        {% if app.status == 'APPLIED' %}badge-applied{% endif %}
+                        {% if app.status == 'REVIEWED' %}badge-reviewed{% endif %}
+                        {% if app.status == 'ACCEPTED' %}badge-accepted{% endif %}
+                        {% if app.status == 'REJECTED' %}badge-rejected{% endif %}
+                    ">
+                        {{ app.get_status_display }}
+                    </span>
+                </div>
+
+                <div class="applicant-actions">
+                    {% if app.resume %}
+                        <a href="{{ app.resume.url }}" target="_blank" class="resume-link">
+                            <i class="fas fa-file-pdf"></i> View Resume
+                        </a>
+                    {% else %}
+                        <span class="no-resume">No Resume</span>
+                    {% endif %}
+                </div>
+
+            </div>
+        {% endfor %}
+    
+    {% else %}
+        <div class="no-applicants">
+            <i class="fas fa-users"></i>
+            <p>No applicants found for this job.</p>
+        </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

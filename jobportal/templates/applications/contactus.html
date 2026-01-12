@@ -1,0 +1,608 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+.contact-wrapper {
+    padding: 40px 20px;
+    background: #ffffff;
+    min-height: calc(100vh - 160px);
+    display: flex;
+    align-items: center;
+}
+
+.contact-card {
+    max-width: 1000px;
+    margin: auto;
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 40px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e5e7eb;
+}
+
+.contact-title {
+    text-align: center;
+    font-size: 32px;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 10px;
+}
+
+.contact-subtitle {
+    text-align: center;
+    color: #6b7280;
+    margin-bottom: 40px;
+    font-size: 16px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.5;
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: start;
+}
+
+/* Contact Info Section */
+.contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.info-card {
+    background: #f9fafb;
+    border-radius: 6px;
+    padding: 20px;
+    border: 1px solid #e5e7eb;
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.info-icon {
+    width: 40px;
+    height: 40px;
+    background: #2563eb;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.info-icon i {
+    color: white;
+    font-size: 16px;
+}
+
+.info-content h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 5px;
+}
+
+.info-content p {
+    color: #6b7280;
+    line-height: 1.4;
+    margin: 0;
+    font-size: 14px;
+}
+
+.social-links {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.social-links a {
+    width: 32px;
+    height: 32px;
+    background: #f3f4f6;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6b7280;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.social-links a:hover {
+    background: #2563eb;
+    color: white;
+}
+
+.social-links a i {
+    font-size: 12px;
+}
+
+/* Contact Form Section */
+.contact-form {
+    background: #ffffff;
+    border-radius: 6px;
+    padding: 30px;
+    border: 1px solid #e5e7eb;
+}
+
+.form-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 5px;
+}
+
+.form-subtitle {
+    color: #6b7280;
+    margin-bottom: 25px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 6px;
+    color: #374151;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.form-label::after {
+    content: ' *';
+    color: #dc2626;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 4px;
+    border: 1px solid #d1d5db;
+    background: #ffffff;
+    font-size: 14px;
+    color: #1f2937;
+    transition: border-color 0.2s ease;
+    outline: none;
+    font-family: inherit;
+}
+
+.form-control:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.1);
+}
+
+.form-control::placeholder {
+    color: #9ca3af;
+}
+
+textarea.form-control {
+    min-height: 120px;
+    resize: vertical;
+    line-height: 1.4;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 12px;
+    background: #2563eb;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.submit-btn:hover {
+    background: #1d4ed8;
+}
+
+.submit-btn i {
+    font-size: 14px;
+}
+
+/* Response Message */
+.response-message {
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: 500;
+    display: none;
+    font-size: 14px;
+}
+
+.response-message.success {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #86efac;
+    display: block;
+}
+
+.response-message.error {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+    display: block;
+}
+
+/* Statistics Section */
+.contact-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-top: 40px;
+    padding: 20px;
+    background: #f9fafb;
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 15px;
+}
+
+.stat-number {
+    font-size: 24px;
+    font-weight: 600;
+    color: #2563eb;
+    margin-bottom: 5px;
+    line-height: 1;
+}
+
+.stat-label {
+    color: #6b7280;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+/* Responsive Design - Mobile First */
+@media (max-width: 992px) {
+    .contact-card {
+        padding: 30px;
+    }
+    
+    .contact-grid {
+        gap: 30px;
+    }
+    
+    .contact-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .contact-wrapper {
+        padding: 30px 15px;
+    }
+    
+    .contact-card {
+        padding: 25px;
+        border-radius: 6px;
+    }
+    
+    .contact-title {
+        font-size: 28px;
+    }
+    
+    .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    
+    .contact-form {
+        padding: 25px;
+    }
+    
+    .info-card {
+        padding: 18px;
+        gap: 12px;
+    }
+    
+    .info-icon {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .info-icon i {
+        font-size: 14px;
+    }
+    
+    .contact-stats {
+        grid-template-columns: 1fr;
+        padding: 20px;
+        gap: 20px;
+    }
+    
+    .stat-number {
+        font-size: 22px;
+    }
+}
+
+@media (max-width: 480px) {
+    .contact-card {
+        padding: 20px;
+    }
+    
+    .contact-title {
+        font-size: 24px;
+    }
+    
+    .contact-subtitle {
+        font-size: 14px;
+    }
+    
+    .contact-form {
+        padding: 20px;
+    }
+    
+    .form-title {
+        font-size: 18px;
+    }
+    
+    .form-control {
+        padding: 9px 11px;
+        font-size: 13px;
+    }
+    
+    .submit-btn {
+        padding: 11px;
+        font-size: 13px;
+    }
+    
+    .social-links a {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .social-links a i {
+        font-size: 11px;
+    }
+    
+    .info-content h4 {
+        font-size: 15px;
+    }
+    
+    .info-content p {
+        font-size: 13px;
+    }
+    
+    .response-message {
+        padding: 10px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 360px) {
+    .contact-wrapper {
+        padding: 20px 10px;
+    }
+    
+    .contact-card {
+        padding: 15px;
+    }
+    
+    .contact-title {
+        font-size: 22px;
+    }
+    
+    .contact-form {
+        padding: 15px;
+    }
+    
+    .info-card {
+        padding: 15px;
+    }
+    
+    .info-icon {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .social-links a {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .social-links a i {
+        font-size: 10px;
+    }
+}
+
+/* Field Error Styling */
+.field-error {
+    color: #dc2626;
+    font-size: 12px;
+    margin-top: 4px;
+    padding: 4px 6px;
+    background: #fef2f2;
+    border-radius: 2px;
+    border: 1px solid #fecaca;
+}
+</style>
+
+<div class="contact-wrapper">
+    <div class="contact-card">
+        <div class="contact-title">Contact Us</div>
+        <div class="contact-subtitle">
+            Get in touch with us for any questions or support
+        </div>
+
+        <div class="contact-grid">
+            <!-- Contact Information -->
+            <div class="contact-info">
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="info-content">
+                        <h4>Our Office</h4>
+                        <p>123 Innovation Drive</p>
+                        <p>San Francisco, CA 94107</p>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+                    <div class="info-content">
+                        <h4>Phone</h4>
+                        <p>+1 (555) 123-4567</p>
+                        <p>Mon-Fri: 8AM-6PM PST</p>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="info-content">
+                        <h4>Email</h4>
+                        <p>support@jobportal.com</p>
+                        <p>careers@jobportal.com</p>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-share-alt"></i>
+                    </div>
+                    <div class="info-content">
+                        <h4>Follow Us</h4>
+                        <p>Connect on social media</p>
+                        <div class="social-links">
+                            <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                            <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Form -->
+            <div class="contact-form">
+                <h3 class="form-title">Send a Message</h3>
+                <p class="form-subtitle">Fill out the form and we'll get back to you soon.</p>
+                
+                <form id="contactForm">
+                    <div class="form-group">
+                        <label class="form-label" for="name">Full Name</label>
+                        <input type="text" class="form-control" id="name" placeholder="John Smith" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email Address</label>
+                        <input type="email" class="form-control" id="email" placeholder="john@example.com" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="subject">Subject</label>
+                        <select class="form-control" id="subject">
+                            <option value="">Select a topic</option>
+                            <option value="general">General Inquiry</option>
+                            <option value="technical">Technical Support</option>
+                            <option value="billing">Billing & Payment</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="message">Your Message</label>
+                        <textarea class="form-control" id="message" placeholder="Please describe your inquiry..." rows="4" required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        <i class="fas fa-paper-plane"></i>
+                        Send Message
+                    </button>
+                    
+                    <div id="responseMessage" class="response-message"></div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Statistics Section -->
+        <div class="contact-stats">
+            <div class="stat-item">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">Support Available</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">98%</div>
+                <div class="stat-label">Satisfaction Rate</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">2h</div>
+                <div class="stat-label">Response Time</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const contactForm = document.getElementById('contactForm');
+    const responseMessage = document.getElementById('responseMessage');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    // Form validation
+    contactForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Get form values
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const message = document.getElementById('message').value.trim();
+        
+        // Simple validation
+        if (!name || !email || !message) {
+            showResponse('Please fill in all required fields.', 'error');
+            return;
+        }
+        
+        if (!validateEmail(email)) {
+            showResponse('Please enter a valid email address.', 'error');
+            return;
+        }
+        
+        // Show loading state
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+        submitBtn.disabled = true;
+        
+        // Simulate form submission
+        setTimeout(() => {
+            showResponse('Thank you! Your message has been sent. We will respond within 24 hours.', 'success');
+            contactForm.reset();
+            submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message';
+            submitBtn.disabled = false;
+        }, 1000);
+    });
+    
+    function showResponse(text, type) {
+        responseMessage.textContent = text;
+        responseMessage.className = 'response-message ' + type;
+    }
+    
+    function validateEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    }
+});
+</script>
+
+{% endblock %}

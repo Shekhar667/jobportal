@@ -1,14 +1,754 @@
-{% load static %}
-<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
-
+{% extends "base.html" %}
+{% block content %}
 <div class="container">
-    <h2>Post a New Job</h2>
-    <form method="post">
-        {% csrf_token %}
-        <input type="text" name="title" placeholder="Job Title" required>
-        <input type="text" name="location" placeholder="Location" required>
-        <input type="text" name="salary" placeholder="Salary" required>
-        <textarea name="description" placeholder="Job Description" required></textarea>
-        <button type="submit">Post Job</button>
-    </form>
+    <div class="form-card">
+        <!-- Header Section -->
+        <div class="form-header">
+            <div class="header-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M21 13v10h-6v-6h-6v6h-6v-10h-3l12-12 12 12h-3zm-1-5.907v-5.093h-3v2.093l3 3z"/>
+                </svg>
+            </div>
+            <h1 class="form-title">Post a New Job</h1>
+            <p class="form-subtitle">Fill in the details to attract top talent to your opportunity</p>
+        </div>
+
+        <!-- Form Section -->
+        <form method="post" class="job-form">
+            {% csrf_token %}
+            
+            <!-- Job Title -->
+            <div class="form-section">
+                <div class="section-header">
+                    <div class="section-number">1</div>
+                    <div>
+                        <label for="title" class="section-label">Job Title</label>
+                        <p class="section-description">A clear, specific title helps candidates find your job</p>
+                    </div>
+                </div>
+                <input type="text" 
+                       id="title" 
+                       name="title" 
+                       class="form-input"
+                       placeholder="e.g. Senior Frontend Developer with React Experience" 
+                       required>
+                <div class="input-footer">
+                    <div class="input-hint">Example: "Marketing Manager" or "Full Stack Developer"</div>
+                </div>
+            </div>
+
+            <!-- Location & Salary -->
+            <div class="form-grid">
+                <div class="form-section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                            </svg>
+                        </div>
+                        <label for="location" class="section-label">Location</label>
+                    </div>
+                    <input type="text" 
+                           id="location" 
+                           name="location" 
+                           class="form-input"
+                           placeholder="Where is this position based?" 
+                           required>
+                    <div class="input-footer">
+                        <div class="tag-list">
+                            <span class="tag">Remote</span>
+                            <span class="tag">Hybrid</span>
+                            <span class="tag">On-site</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c0 1.8-1.39 2.85-3.13 3.16z"/>
+                            </svg>
+                        </div>
+                        <label for="salary" class="section-label">Salary Range</label>
+                    </div>
+                    <input type="text" 
+                           id="salary" 
+                           name="salary" 
+                           class="form-input"
+                           placeholder="e.g. $80,000 - $100,000 per year" 
+                           required>
+                    <div class="input-footer">
+                        <div class="input-hint">Include currency and frequency</div>
+                    </div>
+                </div>
+            </div>
+               <!-- Job Type -->
+            <div class="form-section">
+                <div class="section-header">
+                    <div class="section-number">2</div>
+                    <div>
+                        <label for="job_type" class="section-label">Job Type</label>
+                        <p class="section-description">Select the nature of this job</p>
+                    </div>
+                </div>
+
+                <select name="job_type" id="job_type" class="form-input" required>
+                    <option value="">Select Job Type</option>
+                    <option value="full_time">Full Time</option>
+                    <option value="part_time">Part Time</option>
+                    <option value="contract">Contract</option>
+                    <option value="internship">Internship</option>
+                    <option value="remote">Remote</option>
+                </select>
+            </div>
+
+            <!-- Job Description -->
+            <div class="form-section">
+                <div class="section-header">
+                    <div class="section-number">2</div>
+                    <div>
+                        <label for="description" class="section-label">Job Description</label>
+                        <p class="section-description">Describe responsibilities, requirements, and what makes this role special</p>
+                    </div>
+                </div>
+                <div class="textarea-wrapper">
+                    <textarea id="description" 
+                              name="description" 
+                              class="form-textarea"
+                              placeholder="• What will the candidate do?
+• What skills are required?
+• What benefits do you offer?
+• Why is this a great opportunity?"
+                              rows="6"
+                              required></textarea>
+                    <div class="textarea-tools">
+                        <div class="format-hints">
+                            <span class="format-hint">Use bullet points</span>
+                            <span class="format-hint">Be specific</span>
+                            <span class="format-hint">Highlight benefits</span>
+                        </div>
+                        <div class="char-counter">
+                            <span id="char-count">0</span> / 5000 characters
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <div class="requirements-note">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>All fields are required</span>
+                </div>
+                <button type="submit" class="submit-btn">
+                    <span class="btn-text">Post Job Now</span>
+                    <span class="btn-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                        </svg>
+                    </span>
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
+
+<style>
+    :root {
+        --primary: #2563eb;
+        --primary-dark: #1d4ed8;
+        --primary-light: #dbeafe;
+        --secondary: #7c3aed;
+        --text-primary: #1e293b;
+        --text-secondary: #64748b;
+        --text-tertiary: #94a3b8;
+        --background: #f8fafc;
+        --surface: #ffffff;
+        --border: #e2e8f0;
+        --border-hover: #cbd5e1;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --error: #ef4444;
+        --radius-sm: 8px;
+        --radius-md: 12px;
+        --radius-lg: 16px;
+        --radius-xl: 24px;
+        --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+        --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+        --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.1);
+        --shadow-xl: 0 20px 40px -10px rgba(0,0,0,0.1);
+        --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    .container {
+        width: 100%;
+        min-height: 100vh;
+        padding: 20px;
+        background: linear-gradient(135deg, var(--background) 0%, #f1f5f9 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .form-card {
+        width: 100%;
+        max-width: 1000px;
+        background: var(--surface);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-xl);
+        overflow: hidden;
+        border: 1px solid var(--border);
+        transition: var(--transition);
+    }
+
+    @media (min-width: 768px) {
+        .form-card {
+            padding: 48px;
+        }
+    }
+
+    @media (max-width: 767px) {
+        .form-card {
+            padding: 24px 20px;
+            border-radius: var(--radius-lg);
+        }
+    }
+
+    /* Header Styles */
+    .form-header {
+        text-align: center;
+        margin-bottom: 48px;
+        position: relative;
+    }
+
+    .header-icon {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 20px;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        border-radius: var(--radius-lg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+    }
+
+    .header-icon svg {
+        width: 32px;
+        height: 32px;
+    }
+
+    .form-title {
+        font-size: clamp(28px, 4vw, 40px);
+        font-weight: 800;
+        color: var(--text-primary);
+        margin: 0 0 12px 0;
+        line-height: 1.2;
+        letter-spacing: -0.5px;
+    }
+
+    .form-subtitle {
+        font-size: clamp(14px, 2vw, 18px);
+        color: var(--text-secondary);
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+
+    /* Form Grid */
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 24px;
+        margin-bottom: 32px;
+    }
+
+    @media (max-width: 767px) {
+        .form-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+    }
+
+    /* Form Sections */
+    .form-section {
+        margin-bottom: 32px;
+    }
+
+    .section-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .section-number {
+        width: 32px;
+        height: 32px;
+        background: var(--primary);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 14px;
+        flex-shrink: 0;
+    }
+
+    .section-icon {
+        width: 32px;
+        height: 32px;
+        background: var(--primary-light);
+        color: var(--primary);
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .section-icon svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .section-label {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--text-primary);
+        display: block;
+        margin-bottom: 4px;
+    }
+
+    .section-description {
+        font-size: 14px;
+        color: var(--text-secondary);
+        margin: 0;
+        line-height: 1.5;
+    }
+
+    /* Form Inputs */
+    .form-input, .form-textarea {
+        width: 100%;
+        padding: 16px;
+        font-size: 16px;
+        line-height: 1.5;
+        color: var(--text-primary);
+        background: var(--background);
+        border: 2px solid var(--border);
+        border-radius: var(--radius-md);
+        transition: var(--transition);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .form-input::placeholder, .form-textarea::placeholder {
+        color: var(--text-tertiary);
+    }
+
+    .form-input:focus, .form-textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+        background: white;
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    }
+
+    .form-input:hover, .form-textarea:hover {
+        border-color: var(--border-hover);
+    }
+
+    /* Textarea Specific */
+    .textarea-wrapper {
+        position: relative;
+    }
+
+    .form-textarea {
+        min-height: 200px;
+        resize: vertical;
+        line-height: 1.6;
+    }
+
+    .textarea-tools {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 12px;
+    }
+
+    .format-hints {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .format-hint {
+        font-size: 12px;
+        color: var(--text-tertiary);
+        padding: 4px 8px;
+        background: var(--background);
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .format-hint:before {
+        content: "✓";
+        font-size: 10px;
+    }
+
+    .char-counter {
+        font-size: 14px;
+        color: var(--text-tertiary);
+        font-feature-settings: "tnum";
+    }
+
+    /* Input Footer */
+    .input-footer {
+        margin-top: 12px;
+    }
+
+    .input-hint {
+        font-size: 13px;
+        color: var(--text-tertiary);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .tag-list {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .tag {
+        padding: 6px 12px;
+        background: var(--background);
+        color: var(--text-secondary);
+        border-radius: 20px;
+        font-size: 13px;
+        cursor: pointer;
+        transition: var(--transition);
+        border: 1px solid var(--border);
+    }
+
+    .tag:hover {
+        background: var(--primary-light);
+        color: var(--primary);
+        border-color: var(--primary-light);
+    }
+
+    /* Form Actions */
+
+
+
+    .form-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 32px;
+        border-top: 1px solid var(--border);
+        margin-top: 32px;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    @media (max-width: 640px) {
+        .form-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+    }
+
+    .requirements-note {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        color: var(--text-secondary);
+    }
+
+    .requirements-note svg {
+        width: 18px;
+        height: 18px;
+        color: var(--success);
+    }
+
+    /* Submit Button */
+    .submit-btn {
+        position: relative;
+        padding: 18px 40px;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        color: white;
+        border: none;
+        border-radius: var(--radius-md);
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        transition: var(--transition);
+        box-shadow: var(--shadow-md);
+        min-width: 200px;
+        overflow: hidden;
+    }
+
+    .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .submit-btn:active {
+        transform: translateY(0);
+    }
+
+    .submit-btn:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .submit-btn:hover:before {
+        left: 100%;
+    }
+
+    .btn-text {
+        position: relative;
+        z-index: 1;
+    }
+
+    .btn-icon {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-icon svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    /* Focus States for Accessibility */
+    .form-input:focus-visible, 
+    .form-textarea:focus-visible,
+    .submit-btn:focus-visible {
+        outline: 2px solid var(--primary);
+        outline-offset: 2px;
+    }
+
+    /* Loading State */
+    .submit-btn.loading {
+        pointer-events: none;
+        opacity: 0.8;
+    }
+
+    /* Success State */
+    .form-input.success,
+    .form-textarea.success {
+        border-color: var(--success);
+    }
+
+    /* Error State */
+    .form-input.error,
+    .form-textarea.error {
+        border-color: var(--error);
+    }
+
+    /* Animation for new sections */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .form-section {
+        animation: fadeInUp 0.4s ease-out;
+    }
+
+    /* Print Styles */
+    @media print {
+        .form-card {
+            box-shadow: none;
+            border: 1px solid #ddd;
+        }
+        
+        .submit-btn {
+            display: none;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Character counter for textarea
+        const textarea = document.getElementById('description');
+        const charCount = document.getElementById('char-count');
+        
+        if (textarea && charCount) {
+            textarea.addEventListener('input', function() {
+                charCount.textContent = this.value.length;
+                
+                // Add visual feedback for length
+                if (this.value.length > 4500) {
+                    charCount.style.color = 'var(--warning)';
+                } else if (this.value.length > 4900) {
+                    charCount.style.color = 'var(--error)';
+                } else {
+                    charCount.style.color = 'var(--text-tertiary)';
+                }
+            });
+            
+            // Initialize count
+            charCount.textContent = textarea.value.length;
+        }
+        
+        // Tag click functionality
+        const tags = document.querySelectorAll('.tag');
+        tags.forEach(tag => {
+            tag.addEventListener('click', function() {
+                const input = document.getElementById('location');
+                if (input) {
+                    const currentValue = input.value.trim();
+                    const tagText = this.textContent.trim();
+                    
+                    if (currentValue === '') {
+                        input.value = tagText;
+                    } else if (!currentValue.includes(tagText)) {
+                        input.value = currentValue + ', ' + tagText;
+                    }
+                    
+                    // Trigger focus on input
+                    input.focus();
+                }
+            });
+        });
+        
+        // Form validation and submission feedback
+        const form = document.querySelector('.job-form');
+        const submitBtn = document.querySelector('.submit-btn');
+        
+        if (form && submitBtn) {
+            form.addEventListener('submit', function(e) {
+                // Add loading state
+                submitBtn.classList.add('loading');
+                submitBtn.innerHTML = `
+                    <span class="btn-text">Posting Job...</span>
+                    <span class="btn-icon">
+                        <svg class="animate-spin" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" stroke-dasharray="60" stroke-dashoffset="60"/>
+                        </svg>
+                    </span>
+                `;
+                
+                // Validate form (frontend validation)
+                const inputs = form.querySelectorAll('input[required], textarea[required]');
+                let isValid = true;
+                
+                inputs.forEach(input => {
+                    if (!input.value.trim()) {
+                        isValid = false;
+                        input.classList.add('error');
+                        input.classList.remove('success');
+                    } else {
+                        input.classList.add('success');
+                        input.classList.remove('error');
+                    }
+                });
+                
+                if (!isValid) {
+                    e.preventDefault();
+                    submitBtn.classList.remove('loading');
+                    submitBtn.innerHTML = `
+                        <span class="btn-text">Post Job Now</span>
+                        <span class="btn-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                            </svg>
+                        </span>
+                    `;
+                    
+                    // Scroll to first error
+                    const firstError = form.querySelector('.error');
+                    if (firstError) {
+                        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }
+            });
+        }
+        
+        // Input focus effects
+        const inputs = document.querySelectorAll('.form-input, .form-textarea');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+            
+            input.addEventListener('blur', function() {
+                if (!this.value.trim()) {
+                    this.parentElement.classList.remove('focused');
+                }
+            });
+            
+            // Clear validation classes on input
+            input.addEventListener('input', function() {
+                this.classList.remove('error', 'success');
+            });
+        });
+        
+        // Responsive adjustments
+        function handleResize() {
+            const card = document.querySelector('.form-card');
+            if (window.innerWidth < 768) {
+                card.style.margin = '0';
+                card.style.borderRadius = '0';
+            } else {
+                card.style.margin = '20px';
+                card.style.borderRadius = 'var(--radius-xl)';
+            }
+        }
+        
+        window.addEventListener('resize', handleResize);
+        handleResize(); // Initial call
+        
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+    
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.form-section').forEach(section => {
+            observer.observe(section);
+        });
+    });
+</script>
+{% endblock %}

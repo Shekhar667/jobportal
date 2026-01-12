@@ -1,0 +1,103 @@
+
+{% extends "base.html" %}
+{% block content %}
+<style>
+    .apply-container {
+        max-width: 700px;
+        margin: 40px auto;
+        background: #ffffff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    }
+
+    .apply-container h2 {
+        margin-bottom: 20px;
+        font-weight: 600;
+        text-align: center;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    label {
+        font-weight: 500;
+        margin-bottom: 6px;
+        display: block;
+    }
+
+    input, textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 14px;
+    }
+
+    textarea {
+        resize: vertical;
+        min-height: 80px;
+    }
+
+    .submit-btn {
+        width: 100%;
+        background: #2563eb;
+        color: #fff;
+        padding: 12px;
+        border: none;
+        border-radius: 6px;
+        font-size: 15px;
+        font-weight: 500;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    .submit-btn:hover {
+        background: #1e40af;
+    }
+</style>
+
+<div class="apply-container">
+    <h2>Apply for Job</h2>
+
+    <form method="POST"
+          action="{% url 'apply_job' job.id %}"
+          enctype="multipart/form-data">
+
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label>Qualification</label>
+            <input type="text" name="qualification" placeholder="e.g. B.Tech, MCA" required>
+        </div>
+
+        <div class="form-group">
+            <label>Experience (Years)</label>
+            <input type="number" name="experience" min="0" placeholder="e.g. 2">
+        </div>
+
+        <div class="form-group">
+            <label>Skills</label>
+            <textarea name="skills" placeholder="Python, Django, REST API"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Address</label>
+            <textarea name="address" placeholder="Your current address"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Upload Resume (PDF only)</label>
+            <input type="file" name="resume" accept=".pdf">
+        </div>
+
+        <button type="submit" class="submit-btn">
+            Submit Application
+        </button>
+    </form>
+</div>
+
+{% endblock %}
+
+

@@ -1,29 +1,872 @@
-{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Job Portal</title>
-    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.5;
+        }
+        
+        /* Navbar Styles - Enhanced for mobile */
+        .navbar {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            padding: 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .nav-container {
+            max-width: 1307px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo {
+            font-weight: 700;
+            font-size: 24px;
+            color: #2563eb;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 18px 0;
+        }
+        
+        .logo-icon {
+            color: #2563eb;
+        }
+        
+        /* Mobile menu toggle */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #4b5563;
+            cursor: pointer;
+            padding: 10px;
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            align-items: center;
+            gap: 5px;
+            margin-left: auto;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-item {
+            position: relative;
+        }
+        
+        .nav-link {
+            color: #4b5563;
+            text-decoration: none;
+            padding: 20px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+        }
+        
+        .nav-link:hover {
+            color: #2563eb;
+            border-bottom: 3px solid #2563eb;
+        }
+        
+        .nav-link i {
+            font-size: 14px;
+        }
+        
+        /* User dropdown styles */
+        .user-dropdown {
+            position: relative;
+        }
+        
+        .user-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px;
+            cursor: pointer;
+            color: #4b5563;
+            font-weight: 500;
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: #2563eb;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+        
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            min-width: 200px;
+            padding: 8px 0;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        
+        .user-dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            color: #4b5563;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        
+        .dropdown-item:hover {
+            background-color: #f3f4f6;
+            color: #2563eb;
+        }
+        
+        .dropdown-divider {
+            height: 1px;
+            background-color: #e5e7eb;
+            margin: 4px 0;
+        }
+        
+        /* Main content area - Responsive */
+        .container.mt-4 {
+            max-width: 1256px;
+            margin: 30px auto;
+            padding: 0 20px;
+            flex-grow: 1;
+            width: 100%;
+        }
+        
+        /* Footer Styles - Enhanced for mobile */
+        .footer {
+            background-color: white;
+            border-top: 1px solid #e5e7eb;
+            margin-top: auto;
+            padding: 40px 0 20px;
+        }
+        
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .footer-logo {
+            font-weight: 700;
+            font-size: 24px;
+            color: #2563eb;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        .footer-about {
+            color: #6b7280;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .footer-heading {
+            font-weight: 600;
+            font-size: 18px;
+            color: #374151;
+            margin-bottom: 20px;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+        
+        .footer-links a {
+            color: #6b7280;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.2s ease;
+        }
+        
+        .footer-links a:hover {
+            color: #2563eb;
+        }
+        
+        .footer-contact p {
+            color: #6b7280;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid #e5e7eb;
+            padding-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .social-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6b7280;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .social-icon:hover {
+            background-color: #2563eb;
+            color: white;
+        }
+        
+        /* Enhanced Responsive Styles - Mobile First */
+        
+        /* Large screens (Desktop) */
+        @media (min-width: 1200px) {
+            .nav-container {
+                padding: 0 14px;
+            }
+            
+            .container.mt-4 {
+                padding: 0 40px;
+            }
+        }
+        
+        /* Medium screens (Tablets/Laptops) */
+        @media (max-width: 992px) {
+            .nav-menu {
+                gap: 0;
+            }
+            
+            .nav-link {
+                padding: 18px 12px;
+                font-size: 14px;
+            }
+            
+            .user-toggle span {
+                display: none;
+            }
+            
+            .user-toggle {
+                padding: 18px 12px;
+            }
+            
+            .footer-content {
+                gap: 30px;
+            }
+        }
+        
+        /* Small screens (Tablets) */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+            
+            .nav-menu {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background-color: white;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0;
+                margin-left: 0;
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.5s ease;
+            }
+            
+            .nav-menu.active {
+                max-height: 500px;
+                padding: 10px 0;
+            }
+            
+            .nav-item {
+                width: 100%;
+                text-align: left;
+            }
+            
+            .nav-link {
+                padding: 15px 20px;
+                justify-content: flex-start;
+                border-bottom: 1px solid #f3f4f6;
+                border-left: 3px solid transparent;
+            }
+            
+            .nav-link:hover {
+                border-bottom: 1px solid #f3f4f6;
+                border-left: 3px solid #2563eb;
+            }
+            
+            .user-dropdown .dropdown-menu {
+                position: static;
+                box-shadow: none;
+                background-color: #f9fafb;
+                border-radius: 0;
+                min-width: 100%;
+                opacity: 1;
+                visibility: visible;
+                transform: none;
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease;
+                padding: 0;
+            }
+            
+            .user-dropdown:hover .dropdown-menu {
+                max-height: 200px;
+                padding: 8px 0;
+            }
+            
+            .dropdown-item {
+                padding-left: 40px;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: 30px;
+            }
+            
+            .footer-bottom {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+        }
+        
+        /* Extra small screens (Mobile phones) */
+        @media (max-width: 576px) {
+            .nav-container {
+                padding: 0 15px;
+            }
+            
+            .logo {
+                font-size: 20px;
+                padding: 15px 0;
+            }
+            
+            .container.mt-4 {
+                padding: 0 15px;
+                margin: 20px auto;
+            }
+            
+            .footer {
+                padding: 30px 0 15px;
+            }
+            
+            .footer-container {
+                padding: 0 15px;
+            }
+            
+            .footer-section {
+                min-width: 100%;
+            }
+            
+            .social-icons {
+                justify-content: center;
+            }
+            
+            .user-toggle {
+                padding: 15px;
+            }
+            
+            .user-avatar {
+                width: 32px;
+                height: 32px;
+                font-size: 14px;
+            }
+        }
+        
+        /* Extra extra small screens */
+        @media (max-width: 400px) {
+            .logo span {
+                display: none;
+            }
+            
+            .logo {
+                font-size: 24px;
+            }
+            
+            .footer-contact p {
+                font-size: 14px;
+            }
+            
+            .footer-bottom {
+                font-size: 13px;
+            }
+        }
+        
+        /* Existing styles kept for compatibility */
+        .container.mt-4 {
+            padding: 0px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Content block responsive adjustments */
+        .content-block {
+            width: 100%;
+            overflow-x: auto;
+        }
+        
+        /* Make tables responsive */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        @media (max-width: 768px) {
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .container.mt-4 {
+                padding: 15px;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<nav style="background:#000;padding:10px 20px;color:white">
-    <span style="font-weight:bold">JobPortal</span>
-
-    <span style="float:right">
-        {% if user.is_authenticated %}
-            <a href="/dashboard/" style="color:white;margin-right:10px">Dashboard</a>
-            <a href="/accounts/logout/" style="color:red">Logout</a>
-        {% else %}
-            <a href="/accounts/login/" style="color:white;margin-right:10px">Login</a>
-            <a href="/accounts/signup/" style="color:yellow">Register</a>
-        {% endif %}
-    </span>
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="/" class="logo">
+            <i class="fas fa-briefcase logo-icon"></i>
+            <span>JobPortal</span>
+        </a>
+        
+        <button class="menu-toggle" id="menuToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <ul class="nav-menu" id="navMenu">
+            <!-- Home option at the beginning -->
+            <li class="nav-item">
+                <a href="/" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+            </li>
+            
+            <!-- Search Jobs option - Visible to job seekers and admins, but NOT employers -->
+            {% if user.is_authenticated and user.role != 'employer' %}
+            <li class="nav-item">
+                <a href="/jobs/list/" class="nav-link">
+                    <i class="fas fa-search"></i>
+                    <span>Search Jobs</span>
+                </a>
+            </li>
+            {% endif %}
+            
+            <!-- Role-based navigation -->
+            {% if user.is_authenticated %}
+                <!-- Job Seeker Dashboard - Show Applied Jobs and About Us for job seekers -->
+                {% if user.role == 'job_seeker' %}
+                <li class="nav-item">
+                    <a href="/applications/status/" class="nav-link">
+                        <i class="fas fa-clipboard-check"></i>
+                        <span>Applied Jobs</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="/aboutus/" class="nav-link">
+                        <i class="fas fa-info-circle"></i>
+                        <span>About Us</span>
+                    </a>
+                </li>
+                {% elif user.role == 'employer' %}
+                <!-- Employer Dashboard -->
+                <li class="nav-item">
+                    <a href="/jobs/post/" class="nav-link">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>Add Job</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="/jobs/my_jobs/" class="nav-link">
+                        <i class="fas fa-briefcase"></i>
+                        <span>My Jobs</span>
+                    </a>
+                </li>
+                <!-- Applied Jobs and About Us are NOT shown for employers -->
+                {% elif user.role == 'admin' %}
+                <!-- Admin Dashboard -->
+                <li class="nav-item">
+                    <a href="/admin/dashboard/" class="nav-link">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Admin Dashboard</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="/admin/users/" class="nav-link">
+                        <i class="fas fa-users"></i>
+                        <span>Manage Users</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="/admin/jobs/" class="nav-link">
+                        <i class="fas fa-tasks"></i>
+                        <span>Manage Jobs</span>
+                    </a>
+                </li>
+                {% else %}
+                <!-- Default for authenticated users without a specific role (assume job seeker) -->
+                <li class="nav-item">
+                    <a href="/applications/status/" class="nav-link">
+                        <i class="fas fa-clipboard-check"></i>
+                        <span>Applied Jobs</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="/applications/aboutus/" class="nav-link">
+                        <i class="fas fa-info-circle"></i>
+                        <span>About Us</span>
+                    </a>
+                </li>
+                {% endif %}
+            {% endif %}
+            
+            <!-- Contact Us option - Visible to all authenticated users -->
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+                <a href="/applications/contactus/" class="nav-link">
+                    <i class="fas fa-envelope"></i>
+                    <span>Contact Us</span>
+                </a>
+            </li>
+            {% endif %}
+            
+            {% if user.is_authenticated %}
+            <!-- User dropdown at the end -->
+            <li class="nav-item user-dropdown">
+                <div class="user-toggle">
+                    <div class="user-avatar">
+                        {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+                    </div>
+                    <span>{{ user.first_name }} {{ user.last_name }}</span>
+                    <i class="fas fa-chevron-down" style="font-size: 12px;"></i>
+                </div>
+                
+                <div class="dropdown-menu">
+                    <a href="/accounts/profile/" class="dropdown-item">
+                        <i class="fas fa-user-circle"></i>
+                        <span>My Profile</span>
+                    </a>
+                    
+                    <!-- Role-specific profile options -->
+                    {% if user.role == 'employer' %}
+                    <a href="/employer/dashboard/" class="dropdown-item">
+                        <i class="fas fa-briefcase"></i>
+                        <span>Employer Dashboard</span>
+                    </a>
+                    {% elif user.role == 'job_seeker' or not user.role %}
+                    <a href="/seeker/dashboard/" class="dropdown-item">
+                        <i class="fas fa-user-tie"></i>
+                        <span>Job Seeker Dashboard</span>
+                    </a>
+                    {% elif user.role == 'admin' %}
+                    <a href="/admin/profile/" class="dropdown-item">
+                        <i class="fas fa-cog"></i>
+                        <span>Admin Settings</span>
+                    </a>
+                    {% endif %}
+                    
+                    <div class="dropdown-divider"></div>
+                    <a href="/accounts/logout/" class="dropdown-item">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
+                </div>
+            </li>
+            {% else %}
+            <!-- Login and Register options for non-authenticated users -->
+            <li class="nav-item">
+                <a href="/accounts/login/" class="nav-link">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Login</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/accounts/signup/" class="nav-link" style="color: #2563eb;">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Register</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
 </nav>
 
 <div class="container mt-4">
     {% block content %}{% endblock %}
 </div>
 
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-content">
+            <div class="footer-section">
+                <a href="/" class="footer-logo">JobPortal</a>
+                <p class="footer-about">
+                    Connecting talented professionals with great career opportunities. 
+                    Find your dream job or ideal candidate with our platform.
+                </p>
+                <div class="social-icons">
+                    <a href="#" class="social-icon">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" class="social-icon">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="social-icon">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="#" class="social-icon">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3 class="footer-heading">Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="/"><i class="fas fa-chevron-right"></i> Home</a></li>
+                    
+                    <!-- Footer links based on role -->
+                    {% if user.is_authenticated %}
+                        <!-- Search Jobs link - Show for all authenticated users except employers -->
+                        {% if user.role != 'employer' %}
+                        <li><a href="/jobs/list/"><i class="fas fa-chevron-right"></i> Search Jobs</a></li>
+                        {% endif %}
+                        
+                        {% if user.role == 'job_seeker' or not user.role %}
+                        <li><a href="/applications/status/"><i class="fas fa-chevron-right"></i> Applied Jobs</a></li>
+                        <li><a href="/aboutus/"><i class="fas fa-chevron-right"></i> About Us</a></li>
+                        <li><a href="/seeker/dashboard/"><i class="fas fa-chevron-right"></i> Job Seeker Dashboard</a></li>
+                        {% elif user.role == 'employer' %}
+                        <li><a href="/jobs/post/"><i class="fas fa-chevron-right"></i> Add Job</a></li>
+                        <li><a href="/jobs/my_jobs/"><i class="fas fa-chevron-right"></i> My Jobs</a></li>
+                        <li><a href="/employer/dashboard/"><i class="fas fa-chevron-right"></i> Employer Dashboard</a></li>
+                        {% elif user.role == 'admin' %}
+                        <li><a href="/admin/dashboard/"><i class="fas fa-chevron-right"></i> Admin Dashboard</a></li>
+                        <li><a href="/admin/users/"><i class="fas fa-chevron-right"></i> Manage Users</a></li>
+                        {% endif %}
+                        
+                        <li><a href="/accounts/profile/"><i class="fas fa-chevron-right"></i> Profile</a></li>
+                        <li><a href="/contactus/"><i class="fas fa-chevron-right"></i> Contact Us</a></li>
+                    {% else %}
+                        <li><a href="/jobs/list/"><i class="fas fa-chevron-right"></i> Search Jobs</a></li>
+                        <li><a href="/applications/aboutus/"><i class="fas fa-chevron-right"></i> About Us</a></li>
+                        <li><a href="/applications/contactus/"><i class="fas fa-chevron-right"></i> Contact Us</a></li>
+                        <li><a href="/accounts/login/"><i class="fas fa-chevron-right"></i> Login</a></li>
+                        <li><a href="/accounts/signup/"><i class="fas fa-chevron-right"></i> Register</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3 class="footer-heading">Contact Info</h3>
+                <div class="footer-contact">
+                    <p><i class="fas fa-map-marker-alt"></i> 123 Career Street, Job City, JC 10001</p>
+                    <p><i class="fas fa-phone"></i> 8998877669</p>
+                    <p><i class="fas fa-envelope"></i> BaselineIT.com</p>
+                    <p><i class="fas fa-clock"></i> Mon-Fri: 9:00 AM - 6:00 PM</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2023 JobPortal. All rights reserved.</p>
+            <div>
+                <a href="#" style="color: #6b7280; margin-right: 15px; text-decoration: none;">Privacy Policy</a>
+                <a href="#" style="color: #6b7280; text-decoration: none;">Terms of Service</a>
+            </div>
+        </div>
+    </div>
+</footer>
+<script>
+    // Mobile menu toggle functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const menuToggle = document.getElementById('menuToggle');
+        const navMenu = document.getElementById('navMenu');
+        
+        if (menuToggle && navMenu) {
+            menuToggle.addEventListener('click', function() {
+                navMenu.classList.toggle('active');
+                
+                // Change icon based on menu state
+                const icon = menuToggle.querySelector('i');
+                if (navMenu.classList.contains('active')) {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-times');
+                } else {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            });
+            
+            // Close menu when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!event.target.closest('.nav-container') && window.innerWidth <= 768) {
+                    navMenu.classList.remove('active');
+                    const icon = menuToggle.querySelector('i');
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            });
+            
+            // Close menu when clicking a link
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth <= 768) {
+                        navMenu.classList.remove('active');
+                        const icon = menuToggle.querySelector('i');
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                });
+            });
+        }
+        
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                navMenu.classList.remove('active');
+                const icon = menuToggle.querySelector('i');
+                if (icon) {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            }
+        });
+        
+        // Handle dropdown menus on mobile
+        const userDropdowns = document.querySelectorAll('.user-dropdown');
+        userDropdowns.forEach(dropdown => {
+            const toggle = dropdown.querySelector('.user-toggle');
+            
+            toggle.addEventListener('click', function(e) {
+                if (window.innerWidth <= 768) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // Close other dropdowns
+                    userDropdowns.forEach(otherDropdown => {
+                        if (otherDropdown !== dropdown) {
+                            const otherMenu = otherDropdown.querySelector('.dropdown-menu');
+                            if (otherMenu) {
+                                otherMenu.style.maxHeight = null;
+                            }
+                        }
+                    });
+                    
+                    // Toggle this dropdown
+                    const menu = dropdown.querySelector('.dropdown-menu');
+                    if (menu) {
+                        if (menu.style.maxHeight) {
+                            menu.style.maxHeight = null;
+                        } else {
+                            menu.style.maxHeight = menu.scrollHeight + 'px';
+                        }
+                    }
+                }
+            });
+        });
+        
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function() {
+            if (window.innerWidth <= 768) {
+                const dropdownMenus = document.querySelectorAll('.dropdown-menu');
+                dropdownMenus.forEach(menu => {
+                    menu.style.maxHeight = null;
+                });
+            }
+        });
+    });
+</script>
 </body>
 </html>

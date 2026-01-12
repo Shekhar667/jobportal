@@ -3,17 +3,16 @@ from django.contrib.auth.decorators import login_required
 # from accounts.decorators import role_required
 from .models import Application
 from jobs.models import Job
-from django.http import JsonResponse
+from django.http import HttpResponseNotAllowed, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from accounts.decorators import hybrid_auth_required
-
 # @login_required
+ 
 # @role_required(['admin'])
 @hybrid_auth_required(['admin'])
 def admin_applications(request):
     is_api = request.headers.get('Accept') == 'application/json'
     applications = Application.objects.select_related('job', 'job_seeker')
-
     if is_api:
         data = []
         for app in applications:
@@ -24,94 +23,187 @@ def admin_applications(request):
                 'status': app.status
             })
         return JsonResponse({'applications': data})
-
     return render(request, 'applications/admin_applications.html', {
         'applications': applications
     })
-
-@csrf_exempt
+ 
+ 
+# @csrf_exempt
 # @login_required
 # @role_required(['jobseeker'])
+# @hybrid_auth_required(['jobseeker'])
+ 
+# def apply_job(request, job_id):
+#     try:
+#         app, created = Application.objects.get_or_create(
+#             job_id=job_id,
+#             job_seeker=request.user
+#         )
+ 
+#         if request.headers.get('Accept') == 'application/json':
+#             return JsonResponse(
+#                 {'success': True, 'created': created},
+#                 status=201 if created else 200
+#             )
+#         return redirect('/dashboard/')
+#     except Exception as e:
+#         print('APPLY JOB ERROR:', e)
+#         return JsonResponse({'error': 'Internal server error'}, status=500)
+# ===================== JOBSEEKER: APPLY JOB =====================
+@csrf_exempt
 @hybrid_auth_required(['jobseeker'])
 def apply_job(request, job_id):
+    job = get_object_or_404(Job, id=job_id)
+ 
+    # -------- GET → SHOW FORM --------
+    if request.method == 'GET':
+        return render(request, 'applications/apply_job.html', {
+            'job': job
+        })
+ 
+    # -------- POST → SUBMIT FORM --------
     try:
         app, created = Application.objects.get_or_create(
-            job_id=job_id,
+            job=job,
             job_seeker=request.user
         )
-
+ 
+        if not created:
+            if request.headers.get('Accept') == 'application/json':
+                return JsonResponse(
+                    {'error': 'You have already applied for this job'},
+                    status=409
+                )
+            return redirect('/applications/status/')
+ 
+        app.qualification = request.POST.get('qualification')
+        app.experience = request.POST.get('experience', 0)
+        app.skills = request.POST.get('skills')
+        app.address = request.POST.get('address')
+ 
+        if request.FILES.get('resume'):
+            app.resume = request.FILES['resume']
+ 
+        app.save()
+ 
         if request.headers.get('Accept') == 'application/json':
-            return JsonResponse(
-                {'success': True, 'created': created},
-                status=201 if created else 200
-            )
-
-        return redirect('/dashboard/')
-
+            return JsonResponse({
+                'success': True,
+                'application_id': app.id
+            }, status=201)
+ 
+        return redirect('/applications/status/')
+ 
     except Exception as e:
         print('APPLY JOB ERROR:', e)
         return JsonResponse({'error': 'Internal server error'}, status=500)
-
-
-@csrf_exempt
-# @login_required
-# @role_required(['jobseeker'])
+ 
+ 
+# ===================== JOBSEEKER: VIEW MY APPLICATION STATUS =====================
 @hybrid_auth_required(['jobseeker'])
 def application_status(request):
     apps = Application.objects.filter(job_seeker=request.user)
     is_api = request.headers.get('Accept') == 'application/json'
-
+ 
     if is_api:
-        return JsonResponse({'applications': list(apps.values())})
-
-    return render(request, 'applications/status.html', {'applications': apps})
-
-
+        data = []
+        for app in apps:
+            data.append({
+                'job': app.job.title,
+                'status': app.status,
+                'applied_at': app.applied_at
+            })
+        return JsonResponse({'applications': data})
+ 
+    return render(request, 'applications/status.html', {
+        'applications': apps
+    })
 # @login_required
+ 
 # @role_required(['employer'])
+ 
 # def job_applicants(request, job_id):
+ 
 #     job = get_object_or_404(Job, id=job_id, employer=request.user)
+ 
 #     applications = Application.objects.filter(job=job)
-
+ 
+ 
+ 
 #     if request.headers.get('Accept') == 'application/json':
+ 
 #         return JsonResponse({
+ 
 #             'job': job.title,
+ 
 #             'applications': list(applications.values())
+ 
 #         })
-
+ 
+ 
+ 
 #     return render(request, 'applications/applicants.html', {
+ 
 #         'job': job,
+ 
 #         'applications': applications
+ 
 #     })
-
+ 
+ 
+ 
 # ==============Employer → View applicants of a job++++++++++++++++
-
-
 @csrf_exempt
-# @login_required
-# @role_required(['employer'])
 @hybrid_auth_required(['employer'])
 def job_applicants(request, job_id):
+    # ✅ METHOD GUARD
+    if request.method != 'GET':
+        return HttpResponseNotAllowed(['GET'])
     job = get_object_or_404(Job, id=job_id, employer=request.user)
-    applications = Application.objects.filter(job=job)
-
+    applications = (
+        Application.objects
+        .filter(job=job)
+        .select_related('job_seeker')
+    )
     is_api = request.headers.get('Accept') == 'application/json'
-
     if is_api:
         data = []
         for app in applications:
             data.append({
                 'application_id': app.id,
-                'job_seeker': app.job_seeker.email,
-                'status': app.status
+                'status': app.status,
+                'applied_at': app.applied_at,
+                'job_seeker': {
+                    'id': app.job_seeker.id,
+                    'email': app.job_seeker.email,
+                    'full_name': f"{app.job_seeker.first_name} {app.job_seeker.last_name}",
+                    'phone': app.job_seeker.phone,
+                },
+                'qualification': app.qualification,
+                'experience': app.experience,
+                'skills': app.skills,
+                'address': app.address,
+                # ✅ Resume URL (MEDIA)
+                'resume_url': request.build_absolute_uri(app.resume.url)
+                if app.resume else None,
             })
-        return JsonResponse({'applications': data})
-
-    return render(request, 'applications/applicants.html', {
-        'job': job,
-        'applications': applications
-    })
-
+        return JsonResponse({
+            'job': {
+                'id': job.id,
+                'title': job.title,
+            },
+            'total_applications': len(data),
+            'applications': data,
+        }, status=200)
+    # ✅ TEMPLATE RESPONSE
+    return render(
+        request,
+        'applications/applicants.html',
+        {
+            'job': job,
+            'applications': applications,
+        }
+    )
 #+==============Approve / Reject applicant (Employer)+===================
 @csrf_exempt
 # @login_required
@@ -123,21 +215,26 @@ def update_application_status(request, app_id):
         id=app_id,
         job__employer=request.user
     )
-
     is_api = request.headers.get('Accept') == 'application/json'
     status = request.POST.get('status')  # approved / rejected
-
     if status not in ['approved', 'rejected']:
         return JsonResponse({'error': 'Invalid status'}, status=400)
-
     application.status = status
     application.save()
-
     if is_api:
         return JsonResponse({
             'success': True,
             'application_id': application.id,
             'status': application.status
         })
-
-    return redirect(request.META.get('HTTP_REFERER', '/dashboard/'))
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+ 
+def aboutus(request):
+    return render(request, 'applications/aboutus.html')
+ 
+def contactus(request):
+    return render(request, 'applications/contactus.html')
+ 
+ 
+def quickeasy(request):
+    return render(request, 'applications/quickeasy.html')
