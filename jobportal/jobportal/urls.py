@@ -1,6 +1,6 @@
 """
 URL configuration for jobportal project.
-
+ 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/6.0/topics/http/urls/
 Examples:
@@ -20,14 +20,17 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.conf.urls.static import static
-
+from applications import views
+ 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include('accounts.urls')),
-    path('jobs/', include('jobs.urls')), 
-    path('applications/', include('applications.urls')),
     path('', include('core.urls')),
+    # path('dashboard/', dashboard, name='dashboard'),
+    path('accounts/', include('accounts.urls')),
+    path('jobs/', include('jobs.urls')),
+    path('applications/', include('applications.urls')),
 ]
-
+ 
+# Serve media files in development
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

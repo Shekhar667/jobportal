@@ -6,37 +6,37 @@
         margin: 0 auto;
         padding: 20px;
     }
-    
+   
     .profile-header {
         margin-bottom: 30px;
         padding-bottom: 20px;
         border-bottom: 1px solid #e5e7eb;
     }
-    
+   
     .profile-header h2 {
         color: #1f2937;
         font-size: 28px;
         font-weight: 700;
         margin-bottom: 8px;
     }
-    
+   
     .profile-header p {
         color: #6b7280;
         font-size: 16px;
     }
-    
+   
     .profile-content {
         display: grid;
         grid-template-columns: 1fr;
         gap: 30px;
     }
-    
+   
     @media (min-width: 768px) {
         .profile-content {
             grid-template-columns: 1fr 1fr;
         }
     }
-    
+   
     .profile-card {
         background: white;
         border-radius: 12px;
@@ -44,27 +44,27 @@
         padding: 30px;
         transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
-    
+   
     .profile-card:hover {
         transform: translateY(-2px);
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
     }
-    
+   
     .personal-info-card {
         grid-column: 1;
     }
-    
+   
     .account-info-card {
         grid-column: 2;
     }
-    
+   
     @media (max-width: 767px) {
         .personal-info-card,
         .account-info-card {
             grid-column: 1;
         }
     }
-    
+   
     .card-title {
         display: flex;
         align-items: center;
@@ -76,14 +76,14 @@
         padding-bottom: 16px;
         border-bottom: 2px solid #f3f4f6;
     }
-    
+   
     .card-title i {
         color: #2563eb;
         font-size: 20px;
         width: 24px;
         text-align: center;
     }
-    
+   
     .info-item {
         display: flex;
         align-items: flex-start;
@@ -93,11 +93,11 @@
         border-radius: 8px;
         border-left: 4px solid #2563eb;
     }
-    
+   
     .info-item:last-child {
         margin-bottom: 0;
     }
-    
+   
     .info-label {
         display: flex;
         align-items: center;
@@ -107,21 +107,21 @@
         font-weight: 500;
         margin-right: 20px;
     }
-    
+   
     .info-label i {
         color: #6b7280;
         font-size: 16px;
         width: 20px;
         text-align: center;
     }
-    
+   
     .info-value {
         flex: 1;
         color: #1f2937;
         font-size: 16px;
         font-weight: 500;
     }
-    
+   
     .role-badge {
         display: inline-flex;
         align-items: center;
@@ -133,7 +133,7 @@
         font-weight: 600;
         text-transform: capitalize;
     }
-    
+   
     .profile-actions {
         margin-top: 40px;
         padding: 30px;
@@ -141,7 +141,7 @@
         border-radius: 12px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
     }
-    
+   
     .actions-title {
         color: #374151;
         font-size: 20px;
@@ -151,18 +151,18 @@
         align-items: center;
         gap: 12px;
     }
-    
+   
     .actions-title i {
         color: #2563eb;
     }
-    
+   
     .action-buttons {
         display: flex;
         flex-wrap: wrap;
         gap: 15px;
         margin-top: 25px;
     }
-    
+   
     .btn {
         display: inline-flex;
         align-items: center;
@@ -176,28 +176,28 @@
         cursor: pointer;
         font-size: 15px;
     }
-    
+   
     .btn-primary {
         background: #2563eb;
         color: white;
     }
-    
+   
     .btn-primary:hover {
         background: #1d4ed8;
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
     }
-    
+   
     .btn-secondary {
         background: #f3f4f6;
         color: #374151;
     }
-    
+   
     .btn-secondary:hover {
         background: #e5e7eb;
         transform: translateY(-2px);
     }
-    
+   
     .profile-avatar-section {
         display: flex;
         align-items: center;
@@ -208,7 +208,7 @@
         border-radius: 12px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
     }
-    
+   
     .avatar-large {
         width: 100px;
         height: 100px;
@@ -222,80 +222,80 @@
         font-weight: 600;
         box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
     }
-    
+   
     .avatar-info h3 {
         color: #1f2937;
         font-size: 24px;
         font-weight: 700;
         margin-bottom: 5px;
     }
-    
+   
     .avatar-info p {
         color: #6b7280;
         font-size: 16px;
     }
-    
+   
     /* Loading animation */
     @keyframes fadeIn {
         from { opacity: 0; transform: translateY(10px); }
         to { opacity: 1; transform: translateY(0); }
     }
-    
+   
     .profile-card, .profile-actions, .profile-avatar-section {
         animation: fadeIn 0.5s ease-out forwards;
     }
-    
+   
     .profile-card:nth-child(1) { animation-delay: 0.1s; }
     .profile-card:nth-child(2) { animation-delay: 0.2s; }
     .profile-actions { animation-delay: 0.3s; }
-    
+   
     /* Responsive adjustments */
     @media (max-width: 576px) {
         .profile-container {
             padding: 15px;
         }
-        
+       
         .profile-card {
             padding: 20px;
         }
-        
+       
         .info-item {
             flex-direction: column;
             gap: 8px;
         }
-        
+       
         .info-label {
             min-width: auto;
             margin-right: 0;
         }
-        
+       
         .avatar-large {
             width: 80px;
             height: 80px;
             font-size: 28px;
         }
-        
+       
         .avatar-info h3 {
             font-size: 20px;
         }
-        
+       
         .action-buttons {
             flex-direction: column;
         }
-        
+       
         .btn {
             width: 100%;
             justify-content: center;
         }
     }
 </style>
-
+ 
 <div class="profile-container">
     <div class="profile-header">
         <h2>My Profile</h2>
         <p>View and manage your personal information and account details</p>
     </div>
-    
+   
     <!-- Avatar Section -->
     <div class="profile-avatar-section">
         <div class="avatar-large">
@@ -306,7 +306,7 @@
             <p>Welcome back to your profile dashboard</p>
         </div>
     </div>
-    
+   
     <div class="profile-content">
         <!-- Personal Information Card -->
         <div class="profile-card personal-info-card">
@@ -314,7 +314,7 @@
                 <i class="fas fa-user-circle"></i>
                 Personal Information
             </div>
-            
+           
             <div class="info-item">
                 <div class="info-label">
                     <i class="fas fa-user"></i>
@@ -324,7 +324,7 @@
                     {{ request.user.first_name }} {{ request.user.last_name }}
                 </div>
             </div>
-            
+           
             <div class="info-item">
                 <div class="info-label">
                     <i class="fas fa-envelope"></i>
@@ -334,7 +334,7 @@
                     {{ request.user.email }}
                 </div>
             </div>
-            
+           
             <div class="info-item">
                 <div class="info-label">
                     <i class="fas fa-phone"></i>
@@ -345,14 +345,14 @@
                 </div>
             </div>
         </div>
-        
+       
         <!-- Account Information Card -->
         <div class="profile-card account-info-card">
             <div class="card-title">
                 <i class="fas fa-id-card"></i>
                 Account Information
             </div>
-            
+           
             <div class="info-item">
                 <div class="info-label">
                     <i class="fas fa-shield-alt"></i>
@@ -364,7 +364,7 @@
                     </span>
                 </div>
             </div>
-            
+           
             <div class="info-item">
                 <div class="info-label">
                     <i class="fas fa-calendar-alt"></i>
@@ -378,7 +378,7 @@
                     {% endif %}
                 </div>
             </div>
-            
+           
             <div class="info-item">
                 <div class="info-label">
                     <i class="fas fa-key"></i>
@@ -392,7 +392,7 @@
             </div>
         </div>
     </div>
-    
+   
     <!-- Profile Actions Section -->
     <div class="profile-actions">
         <div class="actions-title">
@@ -402,25 +402,22 @@
         <p style="color: #6b7280; margin-bottom: 20px; line-height: 1.6;">
             Manage your profile settings and update your information as needed.
         </p>
-        
+       
         <div class="action-buttons">
             <a href="/accounts/profile/edit/" class="btn btn-primary">
                 <i class="fas fa-edit"></i>
                 Edit Profile
             </a>
-            
+           
             <a href="/accounts/password/change/" class="btn btn-secondary">
                 <i class="fas fa-lock"></i>
                 Change Password
             </a>
-            <a href="/accounts/notifications/" class="btn btn-secondary">
-                <i class="fas fa-bell"></i>
-                Notifications
-            </a>
+
         </div>
     </div>
 </div>
-
+ 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Add animation to elements as they scroll into view
@@ -428,7 +425,7 @@
             threshold: 0.1,
             rootMargin: '0px 0px -50px 0px'
         };
-        
+       
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -436,13 +433,13 @@
                 }
             });
         }, observerOptions);
-        
+       
         // Observe all profile cards and sections
         document.querySelectorAll('.profile-card, .profile-actions, .profile-avatar-section').forEach(el => {
             el.style.animationPlayState = 'paused';
             observer.observe(el);
         });
-        
+       
         // Format phone number if it exists
         const phoneElement = document.querySelector('.info-value:has(+ .info-label i.fa-phone)');
         if (phoneElement) {

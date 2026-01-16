@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import *
 from django.contrib.auth import views as auth_views
+from .views import upload_profile_image
 urlpatterns = [
     path('signup/', signup_view),
     path('login/', login_view),
@@ -25,5 +26,5 @@ urlpatterns = [
         ),
         name='password_change_done'
     ),
+    path('profile/upload-image/', upload_profile_image, name='upload_profile_image'),
 ]
- 

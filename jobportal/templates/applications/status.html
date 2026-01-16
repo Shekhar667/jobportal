@@ -911,6 +911,24 @@ document.addEventListener('DOMContentLoaded', function() {
     
     console.log('✨ Jobs portal loaded successfully!');
 });
+
+async function fetchNotifications() {
+    try {
+        const res = await fetch('/notifications/json/');
+        const data = await res.json();
+        data.notifications.forEach(n => {
+            if (!n.is_read) {
+                alert(`New Application: ${n.message}`);  // simple pop-up
+            }
+        });
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+// Poll every 15 seconds
+setInterval(fetchNotifications, 15000);
+
 </script>
 
 {% endblock %}

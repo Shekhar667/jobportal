@@ -1,11 +1,15 @@
+ 
 from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
 # from accounts.decorators import role_required
-from .models import Application
+from .models import Application, Notification  
 from jobs.models import Job
 from django.http import HttpResponseNotAllowed, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from accounts.decorators import hybrid_auth_required
+from django.http import JsonResponse
+from .models import Notification  
+from django.contrib.auth.decorators import user_passes_test
 # @login_required
  
 # @role_required(['admin'])
@@ -53,6 +57,7 @@ def admin_applications(request):
 @csrf_exempt
 @hybrid_auth_required(['jobseeker'])
 def apply_job(request, job_id):
+    # Job ko fetch karo
     job = get_object_or_404(Job, id=job_id)
  
     # -------- GET → SHOW FORM --------
@@ -62,43 +67,54 @@ def apply_job(request, job_id):
         })
  
     # -------- POST → SUBMIT FORM --------
-    try:
-        app, created = Application.objects.get_or_create(
-            job=job,
-            job_seeker=request.user
-        )
+    elif request.method == 'POST':
+        try:
+            # Check if user already applied
+            app, created = Application.objects.get_or_create(
+                job=job,
+                job_seeker=request.user
+            )
  
-        if not created:
+            if not created:
+                # Already applied
+                if request.headers.get('Accept') == 'application/json':
+                    return JsonResponse(
+                        {'error': 'You have already applied for this job'},
+                        status=409
+                    )
+                return redirect('/applications/status/')
+ 
+            # Fill remaining fields
+            app.qualification = request.POST.get('qualification')
+            app.experience = request.POST.get('experience', 0)
+            app.skills = request.POST.get('skills')
+            app.address = request.POST.get('address')
+ 
+            if request.FILES.get('resume'):
+                app.resume = request.FILES['resume']
+ 
+            app.save()
+            applicant_name = f"{request.user.first_name} {request.user.last_name}".strip()
+            Notification.objects.create(
+                user=job.employer,
+                message=f"{applicant_name} has applied for your job '{job.title}'"
+            )
+ 
             if request.headers.get('Accept') == 'application/json':
-                return JsonResponse(
-                    {'error': 'You have already applied for this job'},
-                    status=409
-                )
-            return redirect('/applications/status/')
+                return JsonResponse({
+                    'success': True,
+                    'application_id': app.id
+                }, status=201)
+            else:
+                return redirect('/applications/status/')
  
-        app.qualification = request.POST.get('qualification')
-        app.experience = request.POST.get('experience', 0)
-        app.skills = request.POST.get('skills')
-        app.address = request.POST.get('address')
+        except Exception as e:
+            print('APPLY JOB ERROR:', e)
+            return JsonResponse({'error': 'Internal server error'}, status=500)
  
-        if request.FILES.get('resume'):
-            app.resume = request.FILES['resume']
- 
-        app.save()
- 
-        if request.headers.get('Accept') == 'application/json':
-            return JsonResponse({
-                'success': True,
-                'application_id': app.id
-            }, status=201)
- 
-        return redirect('/applications/status/')
- 
-    except Exception as e:
-        print('APPLY JOB ERROR:', e)
-        return JsonResponse({'error': 'Internal server error'}, status=500)
- 
- 
+    # Invalid method
+    else:
+        return HttpResponseNotAllowed(['GET', 'POST'])
 # ===================== JOBSEEKER: VIEW MY APPLICATION STATUS =====================
 @hybrid_auth_required(['jobseeker'])
 def application_status(request):
@@ -238,3 +254,61 @@ def contactus(request):
  
 def quickeasy(request):
     return render(request, 'applications/quickeasy.html')
+ 
+# =====================notifications============================================
+ 
+@hybrid_auth_required(['employer'])
+def notifications(request):
+ 
+    employer_notifications = Notification.objects.filter(user=request.user).order_by('-created_at')
+ 
+    unread_notifications = employer_notifications.filter(is_read=False)
+    unread_notifications.update(is_read=True)
+ 
+    return render(request, 'applications/notifications.html', {
+        'employer_notifications': employer_notifications
+    })
+ 
+ 
+def notifications_json(request):
+    notifications = Notification.objects.filter(user=request.user).order_by('-created_at')
+    data = [
+        {
+            'message': n.message,
+            'created_at': n.created_at.strftime('%b %d, %Y %H:%M'),
+            'is_read': n.is_read
+        } for n in notifications
+    ]
+    return JsonResponse({'notifications': data})
+ 
+from django.shortcuts import redirect
+ 
+@hybrid_auth_required(['employer'])
+def notifications(request):
+    # sirf current logged-in user ke notifications fetch kare
+    employer_notifications = Notification.objects.filter(user=request.user).order_by('-created_at')
+ 
+    # sab unread notifications ko read mark karo
+    unread_notifications = employer_notifications.filter(is_read=False)
+    unread_notifications.update(is_read=True)
+ 
+    return render(request, 'applications/notifications.html', {
+        'employer_notifications': employer_notifications
+    })
+ 
+ 
+@login_required
+def delete_notification(request, notification_id):
+    notification = get_object_or_404(
+        Notification,
+        id=notification_id,
+        user=request.user
+    )
+    notification.delete()
+    return redirect('notifications')
+ 
+ 
+@user_passes_test(lambda u: u.is_superuser)
+def admin_dashboard(request):
+    return render(request, 'admin/dashboard.html')
+ 

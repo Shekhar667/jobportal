@@ -1,0 +1,31 @@
+<h2>Admin Dashboard</h2>
+
+<h3>Employers</h3>
+<table border="1">
+    <tr>
+        <th>Name</th>
+        <th>Email</th>
+    </tr>
+    {% for emp in employers %}
+    <tr>
+        <td>{{ emp.user.full_name }}</td>
+        <td>{{ emp.user.email }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<br>
+
+<h3>Job Seekers</h3>
+<table border="1">
+    <tr>
+        <th>Name</th>
+        <th>Email</th>
+    </tr>
+    {% for js in jobseekers %}
+    <tr>
+        <td>{{ js.user.full_name }}</td>
+        <td>{{ js.user.email }}</td>
+    </tr>
+    {% endfor %}
+</table>
