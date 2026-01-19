@@ -288,5 +288,18 @@ def upload_profile_image(request):
  
  
  
+from django.http import HttpResponse
+from django.contrib.auth import get_user_model
  
+def create_admin_once(request):
+    User = get_user_model()
+ 
+    if User.objects.filter(email="admin@jobportal.com").exists():
+        return HttpResponse("Superuser already exists")
+ 
+    User.objects.create_superuser(
+        email="adminn12@gmail.com",
+        password="admin12"
+    )
+    return HttpResponse("Superuser created successfully")
  

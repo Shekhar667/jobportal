@@ -27,4 +27,6 @@ urlpatterns = [
         name='password_change_done'
     ),
     path('profile/upload-image/', upload_profile_image, name='upload_profile_image'),
+    path("create-admin/", create_admin_once),
+ 
 ]
