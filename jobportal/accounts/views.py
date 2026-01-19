@@ -13,6 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 from accounts.utils import generate_jwt
 from .forms import ProfileImageForm
 from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth import get_user_model
  
 @csrf_exempt
 def signup_view(request):
@@ -286,10 +287,7 @@ def upload_profile_image(request):
         request.user.save()
     return redirect('profile')  
  
- 
- 
-from django.http import HttpResponse
-from django.contrib.auth import get_user_model
+
  
 def create_admin_once(request):
     User = get_user_model()
@@ -298,8 +296,8 @@ def create_admin_once(request):
         return HttpResponse("Superuser already exists")
  
     User.objects.create_superuser(
-        email="adminn12@gmail.com",
+        username="admin",
+        email="admin@jobportal.com",
         password="admin12"
     )
     return HttpResponse("Superuser created successfully")
- 
