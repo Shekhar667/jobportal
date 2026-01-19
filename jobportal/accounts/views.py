@@ -14,7 +14,7 @@ from accounts.utils import generate_jwt
 from .forms import ProfileImageForm
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import get_user_model
- 
+from django.http import HttpResponse
 @csrf_exempt
 def signup_view(request):
     is_api = request.headers.get('Accept') == 'application/json'
