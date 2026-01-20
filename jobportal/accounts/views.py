@@ -15,6 +15,7 @@ from .forms import ProfileImageForm
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import get_user_model
 from django.http import HttpResponse
+
 @csrf_exempt
 def signup_view(request):
     is_api = request.headers.get('Accept') == 'application/json'
@@ -32,6 +33,11 @@ def signup_view(request):
                             status=422
                         )
                     return render(request, 'auth/signup.html', {'error': f'{field} is required'})
+            if User.objects.filter(username=data['username']).exists():
+                message = 'Username already exists'
+                if is_api:
+                    return JsonResponse({'error': message}, status=422)
+                return render(request, 'auth/signup.html', {'error': message})
  
             if User.objects.filter(email=data['email']).exists():
                 if is_api:
@@ -54,6 +60,12 @@ def signup_view(request):
                 is_active=False,
                 otp=otp
             )
+            # send_mail(
+            #     'Your OTP Code',
+            #     f'Your OTP is: {otp}',
+            #     settings.EMAIL_HOST_USER,
+            #     [user.email],
+            # )
             print("OTP:", otp)
             request.session['otp_email'] = user.email
             request.session['otp_attempts'] = 0
@@ -75,7 +87,6 @@ def signup_view(request):
                 status=500
             )
         return render(request, 'auth/signup.html', {'error': 'Something went wrong'})
- 
  
 @csrf_exempt
 def verify_otp_view(request):
